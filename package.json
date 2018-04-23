@@ -1,0 +1,19 @@
+{
+  "name": "pixelizer",
+  "version": "1.0.0",
+  "description": "A canvas drawing to pixel art tool.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "uglify-js": "^3.3.9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solosodium/pixelizer"
+  },
+  "author": "solosodium",
+  "license": "MIT"
+}
