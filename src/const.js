@@ -1,0 +1,2 @@
+/** Namespace */
+var Pixelizer = Pixelizer || {};
