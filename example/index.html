@@ -2,26 +2,29 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta name="theme-color" content="#222">
   <title>Pixelizer</title>
   <link rel="stylesheet" type="text/css" href="index.css">
   <script type="application/javascript" src="../dist/pixelizer.js"></script>
 </head>
 <body>
-  <div class="container" id="container">
-    <canvas id="canvas" width="300" height="300"></canvas>
+  <div class="wrapper">
+    <div class="container" id="container">
+      <h1>PIXELIZER</h1>
+      <canvas id="canvas" width="0" height="0"></canvas>
+    </div>
   </div>
   <script type="application/javascript">
-    window.onload = function() {
-      // Elements.
-      let container = document.getElementById("container");
-      // Initialize.
-      let size = container.offsetWidth > container.offsetHeight ? container.offsetHeight : container.offsetWidth;
-      Pixelizer.init("canvas", size, size);
-      // Window resize callback.
-      window.onresize = function() {
-        let size = container.offsetWidth > container.offsetHeight ? container.offsetHeight : container.offsetWidth;
-        Pixelizer.resize(size, size);
-      };
+    // Elements.
+    let container = document.getElementById("container");
+    // Initialize.
+    let size = container.offsetWidth - 20;
+    Pixelizer.init("canvas", size, size);
+    // Window resize callback.
+    window.onresize = function() {
+      let size = container.offsetWidth - 20;
+      Pixelizer.resize(size, size);
     };
   </script>
 </body>

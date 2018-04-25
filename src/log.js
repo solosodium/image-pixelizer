@@ -1,0 +1,7 @@
+(function() {
+
+  Pixelizer.Log = {
+    
+  };
+
+})();

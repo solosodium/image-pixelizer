@@ -1,4 +1,6 @@
-/** Implementations of public facing functions. */
+/**
+ * Main module. Public facing APIs.
+ */
 (function() {
 
   Pixelizer.init = function(canvasId, width, height) {

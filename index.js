@@ -19,6 +19,7 @@ const FILE_ENCODING = 'utf8';
 // TODO: Source files. The order is preserved for simple tests purposes.
 const SRC_FILES = [
   "const.js",
+  "input.js",
   "main.js"
 ];
 

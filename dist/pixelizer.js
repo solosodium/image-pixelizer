@@ -1,6 +1,8 @@
 /* pixelizer.js */
 var Pixelizer = Pixelizer || {};
 
+(function() {})();
+
 (function() {
     Pixelizer.init = function(e, i, n) {
         Pixelizer.canvas = document.getElementById(e);

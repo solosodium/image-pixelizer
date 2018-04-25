@@ -1,12 +1,43 @@
-html, body, div.container {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-    background-color: #222;
-    font-family: sans-serif;
+@font-face {
+  font-family: Cartoonish;
+  src: url(Cartoonish.ttf);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: #222;
+  font-family: Cartoonish, sans-serif;
+  color: #fff;
+}
+
+h1 {
+  margin: 0;
+  padding: 0.5em 0em 0.25em 0em;
+  font-size: 3em;
+  text-shadow: 0.07em 0.07em #444;
+}
+
+div.wrapper {
+  position: relative;
+  width:100%;
+  height:100vh;
+}
+
+div.container {
+  margin: 0;
+  padding: 0;
+  margin: auto;
+  max-width: 500px;
+  height: 100vh;
+  overflow-y: auto;
+  text-align:center;
 }
 
 canvas {
-  background: #eee
+  margin: 0;
+  padding: 0;
+  background: #fff;
 }
