@@ -1,0 +1,1 @@
+var Pixelizer = Pixelizer || {};

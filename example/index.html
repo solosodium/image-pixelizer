@@ -20,11 +20,11 @@
     let container = document.getElementById("container");
     // Initialize.
     let size = container.offsetWidth - 20;
-    Pixelizer.init("canvas", size, size);
+    let renderer = new Pixelizer.Renderer("canvas", size, size);
     // Window resize callback.
     window.onresize = function() {
       let size = container.offsetWidth - 20;
-      Pixelizer.resize(size, size);
+      renderer.resize(size, size);
     };
   </script>
 </body>
