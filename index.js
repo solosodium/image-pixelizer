@@ -21,6 +21,7 @@ const SRC_FILES = [
   "namespace.js",
   "config.js",
   "log.js",
+  "draw.js",
   "input.js",
   "renderer.js"
 ];

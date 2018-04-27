@@ -1,16 +1,11 @@
 (function() {
 
-  Pixelizer.Renderer = function(canvasId, width, height) {
+  Pixelizer.Renderer = function(canvasId, options) {
     // Initialize canvas.
     this.canvas = document.getElementById(canvasId);
-    this.resize(width, height);
     // Set up modules.
-    var input = new Pixelizer.Input(canvas);
-  };
-
-  Pixelizer.Renderer.prototype.resize = function(width, height) {
-    this.canvas.width = width;
-    this.canvas.height = height;
+    var draw = new Pixelizer.Draw(canvas, options);
+    var input = new Pixelizer.Input(canvas, draw);
   };
 
 })();

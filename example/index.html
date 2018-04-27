@@ -16,16 +16,27 @@
     </div>
   </div>
   <script type="application/javascript">
-    // Elements.
-    let container = document.getElementById("container");
-    // Initialize.
-    let size = container.offsetWidth - 20;
-    let renderer = new Pixelizer.Renderer("canvas", size, size);
+    // Resize canvas first.
+    resizeCanvas();
+    // Initialize Pixelizer.
+    let drawOptions = {
+      color: "rgba(0,0,0,1)",
+      size: 0.05
+    };
+    let renderer = new Pixelizer.Renderer("canvas", drawOptions);
     // Window resize callback.
     window.onresize = function() {
       let size = container.offsetWidth - 20;
-      renderer.resize(size, size);
+      resizeCanvas(size, size);
     };
+    // Resize canvas function.
+    function resizeCanvas() {
+      let container = document.getElementById("container");
+      let size = container.offsetWidth - 20;
+      let canvas = document.getElementById("canvas");
+      canvas.width = size;
+      canvas.height = size;
+    }
   </script>
 </body>
 </html>

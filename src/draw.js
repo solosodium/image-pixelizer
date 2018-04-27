@@ -1,19 +1,46 @@
 (function() {
 
-  Pixelizer.Draw = function(canvas, context, options) {
+  // Point object
+  // {
+  //   pos: { x: <number>, y: <number> },
+  //   options: { color: <string>, size: <number> }
+  // }
 
+  Pixelizer.Draw = function(canvas, options) {
+    this.options = {};
+    this.points = [];
     this.setOptions(options);
   };
 
-  Pixelizer.Draw.prototype.draw = function() {
+  Pixelizer.Draw.prototype.start = function(pos) {
+    this.points = [];
+    this.points.push({
+      pos: pos,
+      options: this.options
+    });
+  };
 
+  Pixelizer.Draw.prototype.draw = function(pos) {
+    this.points.push({
+      pos: pos,
+      options: this.options
+    });
+  };
+
+  Pixelizer.Draw.prototype.end = function(pos) {
+    this.points.push({
+      pos: pos,
+      options: this.options
+    });
+    Pixelizer.Log.debug(this.points);
+    this.points = [];
   };
 
   Pixelizer.Draw.prototype.setOptions = function(options) {
-    // Brush color, format TBD.
-    this.color = options.color;
-    // Brush size, which is represented as the fraction of canvas pixel size.
-    this.size = options.size;
+    this.options = {
+      color: options.color,
+      size: options.size
+    };
   };
 
 })();
