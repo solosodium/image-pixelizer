@@ -6,9 +6,7 @@
 
   /** Debug log. */
   Pixelizer.Log.debug = function(message) {
-    if (Pixelizer.Config.isDebug) {
-      console.log("Pixelizer log: ", message);
-    }
+    console.log("Pixelizer log: ", message);
   };
 
   /** Throw exception. */
