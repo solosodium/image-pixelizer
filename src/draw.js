@@ -12,6 +12,7 @@
     this.points = [];
     this.options = {};
     this.setOptions(options);
+    this.clear();
   };
 
   Pixelizer.Draw.prototype.start = function(pos) {
@@ -46,11 +47,50 @@
     this.points = [];
   };
 
+  // Options object
+  // {
+  //   color: "color string for pointer",
+  //   size: <size of pointer, as fraction of canvas height>,
+  //   pixelX: <number of x pixels>,
+  //   pixelY: <number of y pixels>
+  // }
+
   Pixelizer.Draw.prototype.setOptions = function(options) {
     this.options = {
       color: options.color,
-      size: options.size
+      size: options.size,
+      pixelX: options.pixelX,
+      pixelY: options.pixelY
     };
+  };
+
+  Pixelizer.Draw.prototype.clear = function() {
+    // Draw default background.
+    var backgroundColor = '#ffffff';
+    var checkerColor = '#e0e0e0';
+    // Draw background.
+    this.ctx.beginPath();
+    this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeStyle = backgroundColor;
+    this.ctx.fillStyle = backgroundColor;
+    this.ctx.stroke();
+    this.ctx.fill();
+    var x = this.canvas.width/this.options.pixelX;
+    var y = this.canvas.height/this.options.pixelY;
+    for (var i=0; i<=this.options.pixelX; i++) {
+      for (var j=0; j<=this.options.pixelY; j++) {
+        if ((i + j) % 2 == 0) {
+          this.ctx.beginPath();
+          this.ctx.rect(i*x, j*y, x, y);
+          this.ctx.lineWidth = 1;
+          this.ctx.strokeStyle = checkerColor;
+          this.ctx.fillStyle = checkerColor;
+          this.ctx.stroke();
+          this.ctx.fill();
+        }
+      }
+    }
   };
 
 })();

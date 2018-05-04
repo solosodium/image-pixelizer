@@ -7,12 +7,19 @@
   <title>Pixelizer</title>
   <link rel="stylesheet" type="text/css" href="index.css">
   <script type="application/javascript" src="../dist/pixelizer.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
   <div class="wrapper">
     <div class="container" id="container">
       <h1>PIXELIZER</h1>
       <canvas id="canvas" width="0" height="0"></canvas>
+      <div id="tool" class="tool">
+        <div class="tool-button"><i class="fa fa fa-paint-brush"></i></div>
+        <div class="tool-button"><i class="fa fa-circle-o"></i></div>
+        <div class="tool-button"><i class="fa fa-trash-o"></i></div>
+        <div class="tool-button"><i class="	fa fa-arrow-circle-o-right"></i></div>
+      </div>
     </div>
   </div>
   <script type="application/javascript">
@@ -21,7 +28,9 @@
     // Initialize Pixelizer.
     let drawOptions = {
       color: "rgba(0,0,0,1)",
-      size: 0.01
+      size: 0.01,
+      pixelX: 10,
+      pixelY: 10
     };
     let renderer = new Pixelizer.Renderer("canvas", drawOptions);
     // Window resize callback.
