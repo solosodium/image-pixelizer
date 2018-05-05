@@ -21,7 +21,16 @@
       pos: pos,
       options: this.options
     });
+    // Draw initial circle.
     this.ctx.beginPath();
+    this.ctx.arc(pos.x, pos.y, this.options.size * this.canvas.height / 2, 0, 2 * Math.PI);
+    this.ctx.fillStyle = this.options.color;
+    this.ctx.fill();
+    // Begin line path.
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = this.options.color;
+    this.ctx.lineWidth = this.canvas.height * this.options.size;
+    this.ctx.moveTo(pos.x, pos.y);
   };
 
   Pixelizer.Draw.prototype.draw = function(pos) {
@@ -29,21 +38,30 @@
       pos: pos,
       options: this.options
     });
-    if (this.points.length > 2) {
-      var idx = this.points.length - 1;
-      this.ctx.strokeStyle = this.options.color;
-      this.ctx.lineWidth = this.canvas.height * this.options.size;
-      this.ctx.moveTo(this.points[idx-1].pos.x, this.points[idx-1].pos.y);
-      this.ctx.lineTo(this.points[idx].pos.x, this.points[idx].pos.y);
-      this.ctx.stroke();
-    }
+    // Continue line path.
+    this.ctx.lineTo(pos.x, pos.y);
+    this.ctx.stroke();
+    this.ctx.moveTo(pos.x, pos.y);
   };
 
   Pixelizer.Draw.prototype.end = function(pos) {
-    this.points.push({
-      pos: pos,
-      options: this.options
-    });
+    if (pos) {
+      this.points.push({
+        pos: pos,
+        options: this.options
+      });
+    } else {
+      pos = this.points[this.points.length - 1].pos;
+    }
+    // Complete line path.
+    this.ctx.lineTo(pos.x, pos.y);
+    this.ctx.stroke();
+    // Draw final circle.
+    this.ctx.beginPath();
+    this.ctx.arc(pos.x, pos.y, this.options.size * this.canvas.height / 2, 0, 2 * Math.PI);
+    this.ctx.fillStyle = this.options.color;
+    this.ctx.fill();
+    // Clear points.
     this.points = [];
   };
 

@@ -31,26 +31,38 @@ var Pixelizer = Pixelizer || {};
             options: this.options
         });
         this.ctx.beginPath();
+        this.ctx.arc(t.x, t.y, this.options.size * this.canvas.height / 2, 0, 2 * Math.PI);
+        this.ctx.fillStyle = this.options.color;
+        this.ctx.fill();
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = this.options.color;
+        this.ctx.lineWidth = this.canvas.height * this.options.size;
+        this.ctx.moveTo(t.x, t.y);
     };
     Pixelizer.Draw.prototype.draw = function(t) {
         this.points.push({
             pos: t,
             options: this.options
         });
-        if (this.points.length > 2) {
-            var i = this.points.length - 1;
-            this.ctx.strokeStyle = this.options.color;
-            this.ctx.lineWidth = this.canvas.height * this.options.size;
-            this.ctx.moveTo(this.points[i - 1].pos.x, this.points[i - 1].pos.y);
-            this.ctx.lineTo(this.points[i].pos.x, this.points[i].pos.y);
-            this.ctx.stroke();
-        }
+        this.ctx.lineTo(t.x, t.y);
+        this.ctx.stroke();
+        this.ctx.moveTo(t.x, t.y);
     };
     Pixelizer.Draw.prototype.end = function(t) {
-        this.points.push({
-            pos: t,
-            options: this.options
-        });
+        if (t) {
+            this.points.push({
+                pos: t,
+                options: this.options
+            });
+        } else {
+            t = this.points[this.points.length - 1].pos;
+        }
+        this.ctx.lineTo(t.x, t.y);
+        this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.arc(t.x, t.y, this.options.size * this.canvas.height / 2, 0, 2 * Math.PI);
+        this.ctx.fillStyle = this.options.color;
+        this.ctx.fill();
         this.points = [];
     };
     Pixelizer.Draw.prototype.setOptions = function(t) {
@@ -121,7 +133,7 @@ var Pixelizer = Pixelizer || {};
         i.addEventListener("touchend", function(t) {
             if (this.isPointer) {
                 this.isPointer = false;
-                e.end(n(i, t));
+                e.end(null);
             }
         });
         i.addEventListener("touchmove", function(t) {

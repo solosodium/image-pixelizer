@@ -41,7 +41,8 @@
     canvas.addEventListener('touchend', function(evt) {
       if (this.isPointer) {
         this.isPointer = false;
-        draw.end(getTouchPos(canvas, evt));
+        // No touch is registered with 'touchend' event.
+        draw.end(null);
       }
     });
     canvas.addEventListener('touchmove', function(evt) {

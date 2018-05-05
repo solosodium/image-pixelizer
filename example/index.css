@@ -16,7 +16,7 @@ html, body {
 h1 {
   margin: 0;
   padding: 0.5em 0em 0.25em 0em;
-  font-size: 3em;
+  font-size: 3.5em;
   text-shadow: 0.07em 0.07em #444;
 }
 
@@ -49,7 +49,7 @@ div.tool {
   flex-wrap: nowrap;
   padding: 5px 5px 5px 5px;
   margin: 10px 10px 0 10px;
-  height: 70px;
+  height: 60px;
   background-color: #888;
   border-radius: 6px;
   box-shadow: 4px 4px 0 0 #444;
@@ -57,20 +57,25 @@ div.tool {
 
 div.tool-button {
   background-color: #222;
+  color: #fff;
   width: 120px;
   padding: 0;
   margin: 5px 5px 5px 5px;
   text-align: center;
-  height: 60px;
+  height: 50px;
   font-size: 30px;
   border-radius: 6px;
 }
 
+div.tool-button:active{
+  background-color: #eee;
+  color: #222;
+}
+
 div.tool-button > i {
-  line-height: 60px;
+  line-height: 50px;
   margin: auto 0;
   padding: 0;
-  color: #fff;
   text-shadow: 0.07em 0.07em #444;
   font-size: 1em;
 }
