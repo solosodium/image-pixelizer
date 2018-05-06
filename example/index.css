@@ -1,6 +1,6 @@
 @font-face {
-  font-family: Cartoonish;
-  src: url(Cartoonish.ttf);
+  font-family: Custom;
+  src: url("editundo.ttf");
 }
 
 html, body {
@@ -9,14 +9,16 @@ html, body {
   height: 100%;
   overflow: hidden;
   background-color: #222;
-  font-family: Cartoonish, sans-serif;
+  font-family: sans-serif;
   color: #fff;
 }
 
 h1 {
   margin: 0;
-  padding: 0.5em 0em 0.25em 0em;
-  font-size: 3.5em;
+  padding: 8px 0 8px 0;
+  font-family: Custom;
+  line-height: 60px;
+  font-size: 60px;
   text-shadow: 0.07em 0.07em #444;
 }
 
@@ -24,6 +26,18 @@ div.wrapper {
   position: relative;
   width:100%;
   height:100vh;
+}
+
+div.modal {
+  /* display: none; */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
 }
 
 div.container {
@@ -34,6 +48,30 @@ div.container {
   height: 100vh;
   overflow-y: auto;
   text-align: center;
+}
+
+div.corner {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  margin: 5px 5px 5px 5px;
+  text-align: center;
+}
+
+div.corner > i {
+  line-height: 50px;
+  margin: auto 0;
+  padding: 0;
+  text-shadow: 0.07em 0.07em #444;
+  font-size: 2em;
+}
+
+div.corner > i:active {
+  color: #222;
 }
 
 canvas {
@@ -63,7 +101,6 @@ div.tool-button {
   margin: 5px 5px 5px 5px;
   text-align: center;
   height: 50px;
-  font-size: 30px;
   border-radius: 6px;
 }
 
@@ -77,5 +114,48 @@ div.tool-button > i {
   margin: auto 0;
   padding: 0;
   text-shadow: 0.07em 0.07em #444;
-  font-size: 1em;
+  font-size: 2em;
+}
+
+div.tool-button > input {
+  margin: 10px 0;
+  width: 60%;
+  height: 25px;
+  padding: 0;
+  box-shadow: 3px 3px 0 0 #444;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 80%;
+  height: 20px;
+  border-radius: 8px;
+  background: #eee;
+  outline: none;
+  opacity: 0.9;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  top: 50%;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #222;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #aaa;
+  cursor: pointer;
 }

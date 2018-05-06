@@ -83,6 +83,7 @@
   };
 
   Pixelizer.Draw.prototype.clear = function() {
+    /*
     // Draw default background.
     var backgroundColor = '#ffffff';
     var checkerColor = '#e0e0e0';
@@ -109,6 +110,9 @@
         }
       }
     }
+    */
+    // Override just clear rectangle.
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   };
 
 })();

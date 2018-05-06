@@ -74,30 +74,7 @@ var Pixelizer = Pixelizer || {};
         };
     };
     Pixelizer.Draw.prototype.clear = function() {
-        var t = "#ffffff";
-        var i = "#e0e0e0";
-        this.ctx.beginPath();
-        this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.lineWidth = 1;
-        this.ctx.strokeStyle = t;
-        this.ctx.fillStyle = t;
-        this.ctx.stroke();
-        this.ctx.fill();
-        var e = this.canvas.width / this.options.pixelX;
-        var s = this.canvas.height / this.options.pixelY;
-        for (var n = 0; n <= this.options.pixelX; n++) {
-            for (var o = 0; o <= this.options.pixelY; o++) {
-                if ((n + o) % 2 == 0) {
-                    this.ctx.beginPath();
-                    this.ctx.rect(n * e, o * s, e, s);
-                    this.ctx.lineWidth = 1;
-                    this.ctx.strokeStyle = i;
-                    this.ctx.fillStyle = i;
-                    this.ctx.stroke();
-                    this.ctx.fill();
-                }
-            }
-        }
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     };
 })();
 
@@ -107,28 +84,28 @@ var Pixelizer = Pixelizer || {};
         this.isPointer = false;
         i.addEventListener("mousedown", function(t) {
             this.isPointer = true;
-            e.start(s(i, t));
+            e.start(n(i, t));
         });
         i.addEventListener("mouseup", function(t) {
             if (this.isPointer) {
                 this.isPointer = false;
-                e.end(s(i, t));
+                e.end(n(i, t));
             }
         });
         i.addEventListener("mouseleave", function(t) {
             if (this.isPointer) {
                 this.isPointer = false;
-                e.end(s(i, t));
+                e.end(n(i, t));
             }
         });
         i.addEventListener("mousemove", function(t) {
             if (this.isPointer) {
-                e.draw(s(i, t));
+                e.draw(n(i, t));
             }
         });
         i.addEventListener("touchstart", function(t) {
             this.isPointer = true;
-            e.start(n(i, t));
+            e.start(s(i, t));
         });
         i.addEventListener("touchend", function(t) {
             if (this.isPointer) {
@@ -138,18 +115,18 @@ var Pixelizer = Pixelizer || {};
         });
         i.addEventListener("touchmove", function(t) {
             if (this.isPointer) {
-                e.draw(n(i, t));
+                e.draw(s(i, t));
             }
         });
     };
-    function s(t, i) {
+    function n(t, i) {
         var e = t.getBoundingClientRect();
         return {
             x: i.clientX - e.left,
             y: i.clientY - e.top
         };
     }
-    function n(t, i) {
+    function s(t, i) {
         var e = t.getBoundingClientRect();
         if (i.touches.length > 0) {
             return {
@@ -163,7 +140,13 @@ var Pixelizer = Pixelizer || {};
 (function() {
     Pixelizer.Renderer = function(t, i) {
         this.canvas = document.getElementById(t);
-        var e = new Pixelizer.Draw(canvas, i);
-        var s = new Pixelizer.Input(canvas, e);
+        this.draw = new Pixelizer.Draw(canvas, i);
+        this.input = new Pixelizer.Input(canvas, this.draw);
+    };
+    Pixelizer.Renderer.prototype.updateOptions = function(t) {
+        this.draw.setOptions(t);
+    };
+    Pixelizer.Renderer.prototype.clearCanvas = function() {
+        this.draw.clear();
     };
 })();
