@@ -4,6 +4,9 @@
 
     const IMAGE_FOLDER = "images/";
 
+    /**
+     * IO module for image loading and saving.
+     */
     module.exports = {
         /**
          * Load an image file.
