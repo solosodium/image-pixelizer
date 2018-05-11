@@ -4,7 +4,8 @@
   "description": "A tool to generate pixel art",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "mocha"
   },
   "dependencies": {
     "jimp": "^0.2.28"

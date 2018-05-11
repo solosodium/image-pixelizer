@@ -1,5 +1,5 @@
-var assert = require('assert');
-var Color = require('../src/color');
+let assert = require('assert');
+let Color = require('../src/color');
 
 describe('Color (color.js)', function() {
     
