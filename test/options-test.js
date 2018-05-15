@@ -10,6 +10,8 @@ describe('Options (options.js)', () => {
         assert.equal(options.resizeAlign, Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE);
         assert.equal(options.resizeFilter, Jimp.RESIZE_BILINEAR);
         assert.equal(options.pixelSize, 1);
+        assert.equal(options.jpgQuality, 90);
+        assert.equal(options.pngFilter, Jimp.PNG_FILTER_AUTO);
     });
 
     it('test set resize align bits', () => {
@@ -31,6 +33,22 @@ describe('Options (options.js)', () => {
         assert.equal(options.pixelSize, 5);
         options.setPixelSize(10);
         assert.equal(options.pixelSize, 10);
+    });
+
+    it('test set JPEG image quality', () => {
+        options.setJpgQuality(20);
+        assert.equal(options.jpgQuality, 20);
+        options.setJpgQuality(-10);
+        assert.equal(options.jpgQuality, 0);
+        options.setJpgQuality(300);
+        assert.equal(options.jpgQuality, 100);
+    });
+
+    it('test set PNG image filter', () => {
+        options.setPngFilter(Jimp.PNG_FILTER_NONE);
+        assert.equal(options.pngFilter, Jimp.PNG_FILTER_NONE);
+        options.setPngFilter(Jimp.PNG_FILTER_PAETH);
+        assert.equal(options.pngFilter, Jimp.PNG_FILTER_PAETH);
     });
 
 });

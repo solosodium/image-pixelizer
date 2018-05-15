@@ -25,27 +25,30 @@
             });
         }
 
-        // All functions below have a 'self' argument as they are part of Promise callback functions. 
+        // All functions below have a 'self' argument as they are part of callback functions. 
 
         loadImageSuccess(self, image) {
-            self.image = image;
-            self.resizeImage(self);
-            console.log(self.image);
+            image = self.resizeImage(self, image);
+            self.saveImage(self, image);
         }
 
-        resizeImage(self) {
-            let size = self.options.size;
-            let width = self.image.bitmap.width;
-            let height = self.image.bitmap.height;
+        resizeImage(self, image) {
+            let size = self.options.pixelSize;
+            let width = image.bitmap.width;
+            let height = image.bitmap.height;
             // New width and height should be quantized by new pixel size.
             let w = Math.floor(width / size) * size;
             let h = Math.floor(height / size) * size;
             // Use cover mode.
-            self.image.cover(w, h, self.options.resizeAlign, self.options.resizeFilter);
+            return image.cover(w, h, self.options.resizeAlign, self.options.resizeFilter);
         }
 
         saveImage(self, image) {
-            return image.write(self.output);
+            return image.write(self.output, (error, image) => {
+                if (error) {
+                    this.pixelizerError(error);
+                }
+            });
         }
 
         pixelizerError(error) {

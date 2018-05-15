@@ -10,9 +10,7 @@
             // Do nothing.
         }
 
-        load(file) {
-            
-        }
+        load(file) {}
     }
 
 

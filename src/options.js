@@ -9,6 +9,8 @@
             this.resizeAlign = Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE;
             this.resizeFilter = Jimp.RESIZE_BILINEAR;
             this.pixelSize = 1;
+            this.jpgQuality = 90;
+            this.pngFilter = Jimp.PNG_FILTER_AUTO;
             return this;
         }
 
@@ -30,6 +32,17 @@
             return this;
         }
 
+        /** Set JPEG iamge quality (0~100). */
+        setJpgQuality(quality) {
+            this.jpgQuality = Math.max(0, Math.min(quality, 100));
+            return this;
+        }
+
+        /** Set PNG image filter. */
+        setPngFilter(filter) {
+            this.pngFilter = filter;
+            return this;
+        }
     }
 
     module.exports = Options;

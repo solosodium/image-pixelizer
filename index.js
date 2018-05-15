@@ -9,7 +9,7 @@ const Pixelizer = require('./src/pixelizer');
 
 /** Example. */
 const input = './images/obama.jpg';
-const output = './images/obama.pixel.jpg';
+const output = './images/obama.pixel.png';
 const options = new Options()
     .setPixelSize(10);
 
