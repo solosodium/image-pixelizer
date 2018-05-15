@@ -1,13 +1,16 @@
-var Jimp = require("jimp");
-var io = require("./src/io.js");
+/**
+ * This is an example of how to use pixelizer to convret
+ * images to pixel art.
+ */
 
-var example = io.load("obama.jpg", (err, image) => {
-    if (err) {
-        console.error(err);
-    } else {
-        console.log(image.bitmap.width);
-        console.log(image.bitmap.height);
-        console.log(image.getPixelIndex(0, 3));
-        console.log(image.getPixelIndex(1, 0));
-    }
-});
+/** Import modules. */
+const Options = require('./src/options');
+const Pixelizer = require('./src/pixelizer');
+
+/** Example. */
+const input = './images/obama.jpg';
+const output = './images/obama.pixel.jpg';
+const options = new Options()
+    .setPixelSize(10);
+
+var pixelizer = new Pixelizer(input, output, options);

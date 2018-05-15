@@ -88,9 +88,7 @@
         return Math.min(Math.max(min, val), max);
     }
 
-    /**
-     * Color module for color format conversion.
-     */
+    /** Color module for color format classes. */
     module.exports = {
         RGBA: RGBA,
         HSVA: HSVA

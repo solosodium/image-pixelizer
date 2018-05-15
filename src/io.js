@@ -1,6 +1,20 @@
 (function() {
 
+    /** Import modules. */
     var Jimp = require("jimp");
+
+    class Io {
+        
+        /** Default constructor. */
+        constructor() {
+            // Do nothing.
+        }
+
+        load(file) {
+            
+        }
+    }
+
 
     const IMAGE_FOLDER = "images/";
 
