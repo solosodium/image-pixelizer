@@ -1,0 +1,47 @@
+let assert = require('assert');
+let Pixels = require('../src/pixels');
+
+describe('Pixels (pixels.js)', function() {
+
+    let mockImage = {
+        bitmap: {
+            width: 10,
+            height: 10,
+            data: []
+        },
+        getPixelIndex: function(x, y) {
+            return (x + y * 10) * 4;
+        }
+    };
+    for (var i=0; i<10 * 10 * 4; i++) {
+        mockImage.bitmap.data.push(i % 255);
+    }
+
+    it('constructor should correctly initialize pixels', function() {
+        let pixels = new Pixels(5, 5, 2, mockImage);
+        assert.equal(pixels.width, 5);
+        assert.equal(pixels.height, 5);
+        assert.equal(pixels.pixels.length, 5 * 5);
+    });
+
+    it('getPixel throws exceptions invalid x and y positions', function() {
+        let pixels = new Pixels(5, 5, 2, mockImage);
+        assert.throws(
+            () => pixels.getPixel(-1, 3),
+            RangeError
+        );
+        assert.throws(
+            () => pixels.getPixel(2, 8), 
+            RangeError
+        );
+    });
+
+    it('getPixel returns the correct color', function() {
+        let pixels = new Pixels(5, 5, 2, mockImage);
+        assert(Math.abs(pixels.getPixel(2, 2).h - 210) < 1);
+        assert(Math.abs(pixels.getPixel(2, 2).s - 0.010) < 0.001);
+        assert(Math.abs(pixels.getPixel(2, 2).v - 0.784) < 0.001);
+        assert(Math.abs(pixels.getPixel(2, 2).a - 0.788) < 0.001);
+    });
+
+});
