@@ -1,6 +1,8 @@
 (function() {
 
-    const Jimp = require("jimp");
+    const Jimp = require('jimp');
+    const Pixels = require('./pixels');
+    const Options = require('./options');
 
     class Pixelizer {
 
@@ -8,7 +10,7 @@
          * Load, pixelize, and output image.
          * @param {string} input complete path of the input file
          * @param {string} output complete path of the output file
-         * @param {object} options options for pixelizer 
+         * @param {Options} options options for pixelizer 
          */
         constructor(input, output, options) {
             // Cache parameters.
@@ -25,29 +27,36 @@
             });
         }
 
-        // All functions below have a 'self' argument as they are part of callback functions. 
-
         loadImageSuccess(self, image) {
-            self.image = image;
-            self.image = self.resizeImage(self);
-            self.saveImage(self);
+            // Resize image with new pixel size.
+            image = self.resizeImage(self, image);
+            // Create a pixels representation of image.
+            var oldPixels = self.createPixels(self, image, 1);
+            // Create a pixel representation of image with new pixel size.
+            var newPixels = self.createPixels(self, image, self.options.pixelSize);
+            // Save new pixels as output image.
+            self.saveImage(self, newPixels.toImage());
         }
 
-        resizeImage(self) {
+        resizeImage(self, image) {
             let size = self.options.pixelSize;
-            let width = self.image.bitmap.width;
-            let height = self.image.bitmap.height;
+            let width = image.bitmap.width;
+            let height = image.bitmap.height;
             // New width and height should be quantized by new pixel size.
-            let w = Math.floor(width / size) * size;
-            let h = Math.floor(height / size) * size;
+            let fixedWidth = Math.floor(width / size) * size;
+            let fixedHeight = Math.floor(height / size) * size;
             // Use cover mode.
             let resizeAlign = self.options.resizeAlign;
             let resizeFilter = self.options.resizeFilter;
-            return image.cover(w, h, resizeAlign, resizeFilter);
+            return image.cover(fixedWidth, fixedHeight, resizeAlign, resizeFilter);
         }
 
-        createPixels(self) {
-            
+        createPixels(self, image, size) {
+            let width = image.bitmap.width;
+            let height = image.bitmap.height;
+            let w = Math.floor(width / size);
+            let h = Math.floor(height / size);
+            return new Pixels(w, h, size, image);
         }
 
         saveImage(self, image) {
@@ -63,7 +72,6 @@
         }
     }
 
-    /** Export Pixelizer class. */
     module.exports = Pixelizer;
 
 })();

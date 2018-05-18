@@ -7,7 +7,7 @@
         constructor() {
             // Set up default parameters.
             this.resizeAlign = Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE;
-            this.resizeFilter = Jimp.RESIZE_BILINEAR;
+            this.resizeFilter = Jimp.RESIZE_BEZIER;
             this.pixelSize = 1;
             this.jpgQuality = 90;
             this.pngFilter = Jimp.PNG_FILTER_AUTO;

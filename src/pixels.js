@@ -5,12 +5,13 @@
     const HSVA = require('./color').HSVA;
 
     class Pixels {
+
         /**
-         * Create a Jimp image and pixels with an input image.
+         * Create HSVA pixels representation of an input image.
          * @param {number} width pixels width
          * @param {number} height pixels height
-         * @param {number} size pixel size
-         * @param {Jimp.Image} image an input Jimp image object
+         * @param {number} size new pixel size
+         * @param {Jimp} image an input Jimp image object
          */
         constructor(width, height, size, image) {
             this.width = width;
@@ -19,12 +20,12 @@
             // Initialize pixels. Each pixel is the average of all the
             // pixels in size * size square in the input image.
             this.pixels = [];
-            for (var x=0; x<this.width; x++) {
-                for (var y=0; y<this.height; y++) {
+            for (let x=0; x<this.width; x++) {
+                for (let y=0; y<this.height; y++) {
                     let h, s, v, a;
                     // Iterate through square.
-                    for (var i=0; i<size; i++) {
-                        for (var j=0; j<size; j++) {
+                    for (let i=0; i<size; i++) {
+                        for (let j=0; j<size; j++) {
                             let xx = x * size + i;
                             let yy = y * size + j;
                             let idx = image.getPixelIndex(xx, yy);
@@ -54,7 +55,7 @@
         }
 
         /**
-         * Get pixel as Color.
+         * Get pixel at (x, y) as HSVA color.
          * @param {number} x pixel x position
          * @param {number} y pixel y position
          */
@@ -65,8 +66,27 @@
             if (y < 0 || y > this.height - 1) {
                 throw new RangeError('y (' + y + ') is not in bound');
             }
-            return this.pixels[x + y * this.width];
+            return this.pixels[y * this.width + x];
         }
+
+        /**
+         * Convert pixels to an image object.
+         */
+        toImage() {
+            var image = new Jimp(this.width, this.height);
+            for (let x=0; x<this.width; x++) {
+                for (let y=0; y<this.height; y++) {
+                    let idx = image.getPixelIndex(x, y);
+                    let rgba = this.getPixel(x, y).toRGBA();
+                    image.bitmap.data[idx + 0] = rgba.r;
+                    image.bitmap.data[idx + 1] = rgba.g;
+                    image.bitmap.data[idx + 2] = rgba.b;
+                    image.bitmap.data[idx + 3] = rgba.a;
+                }
+            }
+            return image;
+        }
+        
     }
 
     module.exports = Pixels;

@@ -1,6 +1,6 @@
-let assert = require('assert');
-let Options = require('../src/options');
-let Jimp = require("jimp");
+const assert = require('assert');
+const Options = require('../src/options');
+const Jimp = require("jimp");
 
 describe('Options (options.js)', () => {
 
@@ -8,7 +8,7 @@ describe('Options (options.js)', () => {
 
     it('constructor should set default parameters', () => {
         assert.equal(options.resizeAlign, Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE);
-        assert.equal(options.resizeFilter, Jimp.RESIZE_BILINEAR);
+        assert.equal(options.resizeFilter, Jimp.RESIZE_BEZIER);
         assert.equal(options.pixelSize, 1);
         assert.equal(options.jpgQuality, 90);
         assert.equal(options.pngFilter, Jimp.PNG_FILTER_AUTO);

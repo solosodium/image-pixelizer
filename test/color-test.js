@@ -1,11 +1,11 @@
-let assert = require('assert');
-let Color = require('../src/color');
+const assert = require('assert');
+const Color = require('../src/color');
 
-describe('Color (color.js)', function() {
+describe('Color (color.js)', () => {
     
-    describe('RGBA', function() {
+    describe('RGBA', () => {
         
-        it('constructor should pass all values', function() {
+        it('constructor should pass all values', () => {
             let rgba = new Color.RGBA(128, 120, 20, 240);
             assert.equal(rgba.r, 128);
             assert.equal(rgba.g, 120);
@@ -13,7 +13,7 @@ describe('Color (color.js)', function() {
             assert.equal(rgba.a, 240);
         });
 
-        it('constructor should bound r, g, b, a values', function() {
+        it('constructor should bound r, g, b, a values', () => {
             let rgba = new Color.RGBA(300, -10, 1000, 0);
             assert.equal(rgba.r, 255);
             assert.equal(rgba.g, 0);
@@ -21,7 +21,7 @@ describe('Color (color.js)', function() {
             assert.equal(rgba.a, 0);
         });
 
-        it('convert RGBA to HSVA', function() {
+        it('convert RGBA to HSVA', () => {
             let rgba = new Color.RGBA(128, 120, 20, 240);
             let hsva = rgba.toHSVA();
             assert(Math.abs(hsva.h - 55.556) < 0.01);
@@ -31,9 +31,9 @@ describe('Color (color.js)', function() {
         });
     });
 
-    describe('HSVA', function() {
+    describe('HSVA', () => {
 
-        it('constructor should pass all values', function() {
+        it('constructor should pass all values', () => {
             let hsva = new Color.HSVA(100, 0.2, 0.7, 0.1);
             assert.equal(hsva.h, 100);
             assert.equal(hsva.s, 0.2);
@@ -41,7 +41,7 @@ describe('Color (color.js)', function() {
             assert.equal(hsva.a, 0.1);
         });
 
-        it('constructor should bound h, s, v, a values', function() {
+        it('constructor should bound h, s, v, a values', () => {
             let hsva = new Color.HSVA(1000, -0.4, 2, 0);
             assert.equal(hsva.h, 360);
             assert.equal(hsva.s, 0);
@@ -49,7 +49,7 @@ describe('Color (color.js)', function() {
             assert.equal(hsva.a, 0);
         });
 
-        it('convert HSVA to RGBA', function() {
+        it('convert HSVA to RGBA', () => {
             let hsva = new Color.HSVA(100, 0.2, 0.7, 0.1);
             let rgba = hsva.toRGBA();
             assert.equal(rgba.r, 155);
