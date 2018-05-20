@@ -37,12 +37,24 @@
 
         cluster() {
             // Calculate basic metrics.
-            let size = Math.round((this.oldPixels.width / this.newPixels.width + this.oldPixels.height / this.newPixels.height) / 2);
+            let size = Math.round(
+                (this.oldPixels.width / this.newPixels.width 
+                + this.oldPixels.height / this.newPixels.height) / 2
+            );
 
         }
 
         getResult() {
             return this.newPixels;
+        }
+
+        /**
+         * Calculate the distance between pixel 1 and 2.
+         * The distance is calculated from the maximum of x and y 
+         * coordinate difference, rather than Euclidean distance.
+         */
+        pixelDistance(x1, y1, x2, y2) {
+            return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2));
         }
 
     }
