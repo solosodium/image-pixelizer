@@ -81,6 +81,20 @@
             B = Math.round((B + m) * 255);
             return new RGBA(R, G, B, Math.round(this.a * 255));
         }
+
+        /**
+         * Compare two color difference.
+         * @param {HSVA} c1 
+         * @param {HSVA} c2
+         * @returns {number} difference is a scaled value less than 1
+         */
+        static difference(c1, c2) {
+            let dh = Math.abs(c1.h - c2.h) / 360;
+            let ds = Math.abs(c1.s - c2.s) / 1;
+            let dv = Math.abs(c1.v - c2.v) / 1;
+            let da = Math.abs(c1.a - c2.a) / 1;
+            return (dh + ds + dv + da) / 4;
+        }
     }
 
     /** Clamp value between min and max values. */

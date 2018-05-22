@@ -58,6 +58,14 @@ describe('Color (color.js)', () => {
             assert.equal(rgba.a, 26);
         });
 
+        it('test color difference', () => {
+            let hsva1 = new Color.HSVA(360, 1, 1, 1);
+            let hsva2 = new Color.HSVA(180, 0.5, 0.5, 0.5);
+            let hsva3 = new Color.HSVA(180, 0.5, 0.5, 0.5);
+            assert.equal(Color.HSVA.difference(hsva1, hsva2), 0.5);
+            assert.equal(Color.HSVA.difference(hsva2, hsva3), 0);
+        });
+
     });
 
 });

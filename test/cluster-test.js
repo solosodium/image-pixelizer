@@ -25,18 +25,17 @@ describe('Cluster (cluster.js)', () => {
         let cluster = new Cluster(oldPixels, newPixels);
         assert.deepEqual(cluster.oldPixels, oldPixels);
         assert.deepEqual(cluster.newPixels, newPixels);
-        assert.equal(cluster.labels[0], 'null');
-        assert.equal(cluster.clusters[0], 0);
+        assert.deepEqual(cluster.labels[0], { x: -1, y: -1 });
     });
 
     it('test calculate pixel distance', () => {
         let cluster = new Cluster(oldPixels, newPixels);
-        let dist1 = cluster.pixelDistance(2, 2, 10, 8);
-        let dist2 = cluster.pixelDistance(0, 10, 0, 20);
-        let dist3 = cluster.pixelDistance(5, 0, 10, 0);
-        assert.equal(dist1, 8);
-        assert.equal(dist2, 10);
-        assert.equal(dist3, 5);
+        let dist1 = cluster.pixelDistance(2, 2, 4, 4, 2);
+        let dist2 = cluster.pixelDistance(0, 1, 0, 2, 2);
+        let dist3 = cluster.pixelDistance(1, 0, 2, 0, 2) ;
+        assert.equal(dist1, 1);
+        assert.equal(dist2, 0.5);
+        assert.equal(dist3, 0.5);
     });
 
 });
