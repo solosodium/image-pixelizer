@@ -58,6 +58,7 @@
          * Get pixel at (x, y) as HSVA color.
          * @param {number} x pixel x position
          * @param {number} y pixel y position
+         * @returns {HSVA} a HSVA color
          */
         getPixel(x, y) {
             if (x < 0 || x > this.width - 1) {
@@ -71,6 +72,7 @@
 
         /**
          * Convert pixels to an image object.
+         * @returns {Jimp} a Jimp image
          */
         toImage() {
             var image = new Jimp(this.width, this.height);
