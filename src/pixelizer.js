@@ -3,6 +3,7 @@
     const Jimp = require('jimp');
     const Pixels = require('./pixels');
     const Options = require('./options');
+    const Cluster =require('./cluster');
 
     class Pixelizer {
 
@@ -21,7 +22,7 @@
             var self = this;
             Jimp.read(input, (error, image) => {
                 if (error) {
-                    self.pixelizerError(error);
+                    throw error;
                 }
                 self.loadImageSuccess(self, image);
             });
@@ -36,6 +37,9 @@
             image.blur(self.options.pixelSize / 2);
             // Create a pixel representation of image with new pixel size.
             var newPixels = self.createPixels(self, image, self.options.pixelSize);
+            // Create cluster.
+            var cluster = self.createCluster(self, oldPixels, newPixels);
+            cluster.cluster();
             // Save new pixels as output image.
             self.saveImage(self, newPixels.toImage());
         }
@@ -61,16 +65,16 @@
             return new Pixels(w, h, size, image);
         }
 
+        createCluster(self, oldPixels, newPixels) {
+            return new Cluster(oldPixels, newPixels);
+        }
+
         saveImage(self, image) {
             return image.write(self.output, (error, image) => {
                 if (error) {
-                    this.pixelizerError(error);
+                    throw error;
                 }
             });
-        }
-
-        pixelizerError(error) {
-            throw error;
         }
     }
 

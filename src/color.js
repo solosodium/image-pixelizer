@@ -95,6 +95,20 @@
             let da = Math.abs(c1.a - c2.a) / 1;
             return (dh + ds + dv + da) / 4;
         }
+
+        /**
+         * Add two colors.
+         * @param {HSVA} c1 
+         * @param {HSVA} c2
+         * @returns {HSVA} summary of two colors
+         */
+        static add(c1, c2) {
+            let h = c1.h + c2.h;
+            let s = c1.s + c2.s;
+            let v = c1.v + c2.v;
+            let a = c1.a + c2.a;
+            return new HSVA(h, s, v, a);
+        }
     }
 
     /** Clamp value between min and max values. */

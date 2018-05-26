@@ -66,6 +66,16 @@ describe('Color (color.js)', () => {
             assert.equal(Color.HSVA.difference(hsva2, hsva3), 0);
         });
 
+        it('test color addition', () => {
+            let hsva1 = new Color.HSVA(0, 0.1, 0.2, 0.3);
+            let hsva2 = new Color.HSVA(50, 0.2, 0.3, 0.4);
+            let add = Color.HSVA.add(hsva1, hsva2);
+            assert(Math.abs(add.h - 50) < 1);
+            assert(Math.abs(add.s - 0.3) < 0.1);
+            assert(Math.abs(add.v - 0.5) < 0.1);
+            assert(Math.abs(add.a - 0.7) < 0.1);
+        });
+
     });
 
 });

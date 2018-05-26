@@ -33,21 +33,32 @@
                     + '), size(' + this.size + '), new height(' 
                     + newPixels.height + ') combination');
             }
-            // TODO: mix should be fine tuned.
+            // TODO: these paramaeters should be fine tuned.
             this.mix = 0.5;
+            this.iterations = 10;
+            this.threshold = 0.05;
             // Labels are for each individual old pixel, which indicates 
             // which cluster (new pixel) it belongs to.
             for (let x=0; x<this.oldPixels.width; x++) {
                 for (let y=0; y<this.oldPixels.height; y++) {
-                    this.labels[x + y * this.oldPixels.width] 
-                        = { x: -1, y: -1 };
+                    this.writeLabel(x, y, {
+                        x: -1,
+                        y: -1
+                    });
                 }
             }
         }
 
         /** Clustering algorithm, compute the new pixels. */
         cluster() {
-            let acc = map();
+            for (let i=0; i<this.iterations; i++) {
+                let acc = this.map();
+                if (acc / this.oldPixels.width / this.oldPixels.height 
+                    < this.threshold) {
+                    break;
+                }
+                this.reduce();
+            }
         }
 
         /** Assgin old pixels with labels. */
@@ -99,7 +110,7 @@
                         acc++;
                     }
                     // Save new label.
-                    this.saveLabel(x, y, {
+                    this.writeLabel(x, y, {
                         x: label.x,
                         y: label.y
                     });
@@ -110,7 +121,34 @@
 
         /** Based on assgined labels, calculate new pixel values. */
         reduce() {
-
+            // Tansform labels to new pixels space. Map will be map new 
+            // pixel to a list of old pixels.
+            let map = [];
+            for (let x=0; x<this.newPixels.width; x++) {
+                for (let y=0; y<this.newPixels.height; y++) {
+                    map[x + y * this.newPixels.width] = [];
+                }
+            }
+            for (let x=0; x<this.oldPixels.width; x++) {
+                for (let y=0; y<this.oldPixels.height; y++) {
+                    let l = this.readLabel(x, y);
+                    map[l.x + l.y * this.newPixels.width].push(l);
+                }
+            }
+            // Assgin values to new pixels.
+            for (let x=0; x<this.newPixels.width; x++) {
+                for (let y=0; y<this.newPixels.height; y++) {
+                    let h = 0, s = 0, v = 0, a = 0;
+                    let ps = map[x + y * this.newPixels.width];
+                    for (let i=0; i<ps.length; i++) {
+                        h += ps[i].h / ps.length;
+                        s += ps[i].s / ps.length;
+                        v += ps[i].v / ps.length;
+                        a += ps[i].a / ps.length;
+                    }
+                    this.newPixels.setPixel(x, y, new HSVA(h, s, v, a));
+                }
+            }
         }
 
         /** Result is clusted new pixels. */
@@ -173,7 +211,7 @@
             return this.labels[x + y * this.oldPixels.width];
         }
 
-        saveLabel(x, y, val) {
+        writeLabel(x, y, val) {
             this.labels[x + y * this.oldPixels.width] = val;
         }
 

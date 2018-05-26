@@ -1,5 +1,6 @@
 const assert = require('assert');
 const Pixels = require('../src/pixels');
+const HSVA = require('../src/color').HSVA;
 
 describe('Pixels (pixels.js)', () => {
 
@@ -53,6 +54,27 @@ describe('Pixels (pixels.js)', () => {
         assert(Math.abs(pixels.getPixel(2, 2).s - 0.010) < 0.001);
         assert(Math.abs(pixels.getPixel(2, 2).v - 0.784) < 0.001);
         assert(Math.abs(pixels.getPixel(2, 2).a - 0.788) < 0.001);
+    });
+
+    
+
+    it('setPixel throws exceptions invalid x and y positions', () => {
+        let pixels = new Pixels(5, 5, 2, mockImage);
+        assert.throws(
+            () => pixels.setPixel(-1, 3, null),
+            Error
+        );
+        assert.throws(
+            () => pixels.setPixel(2, 8, null), 
+            Error
+        );
+    });
+
+    it('setPixel sets the correct color', () => {
+        let pixels = new Pixels(5, 5, 2, mockImage);
+        let hsva = new HSVA(180, 0.5, 0.5, 0.5);
+        pixels.setPixel(2, 2, hsva);
+        assert.deepEqual(pixels.getPixel(2, 2), hsva);
     });
 
     it('toImage should return the correct image', () => {

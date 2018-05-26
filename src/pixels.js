@@ -75,6 +75,22 @@
         }
 
         /**
+         * Set pixel HSVA color at (x, y).
+         * @param {number} x pixel x position
+         * @param {number} y pixel y position
+         * @param {HSVA} hsva a HSVA color 
+         */
+        setPixel(x, y, hsva) {
+            if (x < 0 || x > this.width - 1) {
+                throw new Error('x (' + x + ') is not in bound');
+            }
+            if (y < 0 || y > this.height - 1) {
+                throw new Error('y (' + y + ') is not in bound');
+            }
+            this.pixels[y * this.width + x] = hsva;
+        }
+
+        /**
          * Convert pixels to an image object.
          * @returns {Jimp} a Jimp image
          */
