@@ -8,9 +8,13 @@ const Options = require('./src/options');
 const Pixelizer = require('./src/pixelizer');
 
 /** Example. */
-const input = './images/obama.jpg';
-const output = './images/obama.pixel.png';
+const image = 'penguins';
+const ext = '.jpg';
+const size = 40;
+
+const input = './images/' + image + ext;
+const output = './images/' + image + '.pixel.png';
 const options = new Options()
-    .setPixelSize(20);
+    .setPixelSize(size);
 
 var pixelizer = new Pixelizer(input, output, options);
