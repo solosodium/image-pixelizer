@@ -14,26 +14,40 @@
             this.oldPixels = oldPixels;
             this.newPixels = newPixels;
             this.labels = [];
-            this.size = Math.round(     // new pixel size relative to old
-                (this.oldPixels.width / this.newPixels.width 
-                + this.oldPixels.height / this.newPixels.height) / 2);
+            // Verify new pixel size is correct.
+            let widthSize = Math.floor(oldPixels.width / newPixels.width);
+            let heightSize 
+                = Math.floor(oldPixels.height / newPixels.height);
+            if (widthSize !== heightSize) {
+                throw new Error('width(' + widthSize + ') and height('
+                    + heightSize + ') sizes fail to match');
+            }
+            this.size = widthSize;
+            if (oldPixels.width !== this.size * newPixels.width) {
+                throw new Error('invalid old width(' + oldPixels.width
+                    + '), size(' + this.size + '), new width(' 
+                    + newPixels.width + ') combination');
+            }
+            if (oldPixels.height !== this.size * newPixels.height) {
+                throw new Error('invalid old height(' + oldPixels.height
+                    + '), size(' + this.size + '), new height(' 
+                    + newPixels.height + ') combination');
+            }
             // TODO: mix should be fine tuned.
             this.mix = 0.5;
-            // TODO: initialize new pixels should make a difference
-            this.initialize();
-        }
-
-        /** Initialize cluster data. */
-        initialize() {
             // Labels are for each individual old pixel, which indicates 
             // which cluster (new pixel) it belongs to.
             for (let x=0; x<this.oldPixels.width; x++) {
                 for (let y=0; y<this.oldPixels.height; y++) {
                     this.labels[x + y * this.oldPixels.width] 
                         = { x: -1, y: -1 };
-                        console.log(x, y);
                 }
             }
+        }
+
+        /** Clustering algorithm, compute the new pixels. */
+        cluster() {
+            let acc = map();
         }
 
         /** Assgin old pixels with labels. */
@@ -80,28 +94,23 @@
                     label.x = label.x + permutation.x
                     label.y = label.y + permutation.y;
                     // Check if old label is changed to a new label.
-                    let l = this.labels[x + y * this.oldPixels.width];
+                    let l = this.readLabel(x, y);
                     if (l.x !== label.x || l.y !== label.y) {
                         acc++;
                     }
                     // Save new label.
-                    this.labels[x + y * this.oldPixels.width] = {
+                    this.saveLabel(x, y, {
                         x: label.x,
                         y: label.y
-                    };
+                    });
                 }
             }
             return acc;
         }
 
-        /**  */
+        /** Based on assgined labels, calculate new pixel values. */
         reduce() {
 
-        }
-
-        /** Clustering algorithm, compute the new pixels. */
-        cluster() {
-            let acc = map();
         }
 
         /** Result is clusted new pixels. */
@@ -130,21 +139,18 @@
             // Precheck pixel index range.
             if (x1 < 0 || x1 >= this.oldPixels.width 
                 || y1 < 0 || y1 >= this.oldPixels.height) {
-                throw new RangeError('x1 (' + x1 + '), y1 (' + y1
+                throw new Error('x1 (' + x1 + '), y1 (' + y1
                     + ') is out of range');
             }
             if (x2 < 0 || x2 >= this.newPixels.width 
                 || y2 < 0 || y2 >= this.newPixels.height) {
-                throw new RangeError('x2 (' + x2 + '), y2 (' + y2
+                throw new Error('x2 (' + x2 + '), y2 (' + y2
                     + ') is out of range');
             }
             // Calculate color distance.
             let op = this.oldPixels.getPixel(x1, y1);
             let np = this.newPixels.getPixel(x2, y2);
             let cd = HSVA.difference(op, np);
-
-            // console.log(op, np, x2, y2);
-
             // New pixel is transformed to old pixel equivalent.
             let x2t = x2 * size + (size - 1) / 2;
             let y2t = y2 * size + (size - 1) / 2;
@@ -153,8 +159,8 @@
             let dy = Math.abs(y1 - y2t);
             let dxy = Math.max(dx, dy);
             // Make sure distance is less than size.
-            if (dxy > size) {
-                throw new RangeError('Old (' + x1 + ', ' + y1
+            if (dxy > size * 1.5) {
+                throw new Error('old (' + x1 + ', ' + y1
                     + ') and new (' + x2 + ', ' + y2
                     + ') pixels are not neighbors');
             }
@@ -162,14 +168,13 @@
             // Return distance with mix factor.
             return mix * cd + (1 - mix) * pd;
         }
+        
+        readLabel(x, y) {
+            return this.labels[x + y * this.oldPixels.width];
+        }
 
-        /**
-         * Calculate the differnce between HSVA color 1 and 2.
-         * @param {HSVA} c1 color 1 
-         * @param {HSVA} c2 color 2
-         */
-        colorDifference(c1, c2) {
-            let dh = Math.abs(c1.h - c2.h) / 360;
+        saveLabel(x, y, val) {
+            this.labels[x + y * this.oldPixels.width] = val;
         }
 
     }

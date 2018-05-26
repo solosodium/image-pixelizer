@@ -107,5 +107,5 @@
         RGBA: RGBA,
         HSVA: HSVA
     };
-
+    
 })();

@@ -17,12 +17,23 @@
             this.width = width;
             this.height = height;
             this.size = size;
+            // Check width, height, size and image dimensions.
+            if (width * size > image.bitmap.width) {
+                throw new Error('invalid width combination, width('
+                    + width + '), size(' + size + '), image width('
+                    + image.bitmap.width + ')');
+            }
+            if (height * size > image.bitmap.height) {
+                throw new Error('invalid height combination, height('
+                    + height + '), size(' + size + '), image height('
+                    + image.bitmap.height + ')');
+            }
             // Initialize pixels. Each pixel is the average of all the
             // pixels in size * size square in the input image.
             this.pixels = [];
             for (let x=0; x<this.width; x++) {
                 for (let y=0; y<this.height; y++) {
-                    let h, s, v, a;
+                    let h = 0, s = 0, v = 0, a = 0;
                     // Iterate through square.
                     for (let i=0; i<size; i++) {
                         for (let j=0; j<size; j++) {
@@ -36,17 +47,10 @@
                                 image.bitmap.data[idx + 3]
                             );
                             let hsva = rgba.toHSVA();
-                            if (i === 0 && j === 0) {
-                                h = hsva.h / size / size;
-                                s = hsva.s / size / size;
-                                v = hsva.v / size / size;
-                                a = hsva.a / size / size;
-                            } else {
-                                h += hsva.h / size / size;
-                                s += hsva.s / size / size;
-                                v += hsva.v / size / size;
-                                a += hsva.a / size / size;
-                            }
+                            h += hsva.h / size / size;
+                            s += hsva.s / size / size;
+                            v += hsva.v / size / size;
+                            a += hsva.a / size / size;
                         }
                     }
                     this.pixels[y * width + x] = new HSVA(h, s, v, a);
@@ -62,10 +66,10 @@
          */
         getPixel(x, y) {
             if (x < 0 || x > this.width - 1) {
-                throw new RangeError('x (' + x + ') is not in bound');
+                throw new Error('x (' + x + ') is not in bound');
             }
             if (y < 0 || y > this.height - 1) {
-                throw new RangeError('y (' + y + ') is not in bound');
+                throw new Error('y (' + y + ') is not in bound');
             }
             return this.pixels[y * this.width + x];
         }
@@ -88,7 +92,6 @@
             }
             return image;
         }
-        
     }
 
     module.exports = Pixels;

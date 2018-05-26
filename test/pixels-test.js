@@ -24,15 +24,26 @@ describe('Pixels (pixels.js)', () => {
         assert.equal(pixels.pixels.length, 5 * 5);
     });
 
+    it('constructor should throw exception for invalid inputs', () => {
+        assert.throws(
+            () => new Pixels(6, 5, 2, mockImage), 
+            Error
+        );
+        assert.throws(
+            () => new Pixels(5, 6, 2, mockImage), 
+            Error
+        );
+    });
+
     it('getPixel throws exceptions invalid x and y positions', () => {
         let pixels = new Pixels(5, 5, 2, mockImage);
         assert.throws(
             () => pixels.getPixel(-1, 3),
-            RangeError
+            Error
         );
         assert.throws(
             () => pixels.getPixel(2, 8), 
-            RangeError
+            Error
         );
     });
 
