@@ -52,4 +52,9 @@ describe('Cluster (cluster.js)', () => {
         assert(Math.abs(dist3 - 0.0412) < 0.001);
     });
 
+    it('test cluster map function', () => {
+        let cluster = new Cluster(oldPixels, newPixels);
+        let acc = cluster.map();
+    });
+
 });

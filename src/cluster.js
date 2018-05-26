@@ -17,7 +17,7 @@
             this.size = Math.round(     // new pixel size relative to old
                 (this.oldPixels.width / this.newPixels.width 
                 + this.oldPixels.height / this.newPixels.height) / 2);
-            // TODO: mix should be fin tuned.
+            // TODO: mix should be fine tuned.
             this.mix = 0.5;
             // TODO: initialize new pixels should make a difference
             this.initialize();
@@ -31,6 +31,7 @@
                 for (let y=0; y<this.oldPixels.height; y++) {
                     this.labels[x + y * this.oldPixels.width] 
                         = { x: -1, y: -1 };
+                        console.log(x, y);
                 }
             }
         }
@@ -93,9 +94,14 @@
             return acc;
         }
 
+        /**  */
+        reduce() {
+
+        }
+
         /** Clustering algorithm, compute the new pixels. */
         cluster() {
-            
+            let acc = map();
         }
 
         /** Result is clusted new pixels. */
@@ -136,6 +142,9 @@
             let op = this.oldPixels.getPixel(x1, y1);
             let np = this.newPixels.getPixel(x2, y2);
             let cd = HSVA.difference(op, np);
+
+            // console.log(op, np, x2, y2);
+
             // New pixel is transformed to old pixel equivalent.
             let x2t = x2 * size + (size - 1) / 2;
             let y2t = y2 * size + (size - 1) / 2;
