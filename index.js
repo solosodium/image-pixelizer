@@ -11,6 +11,6 @@ const Pixelizer = require('./src/pixelizer');
 const input = './images/obama.jpg';
 const output = './images/obama.pixel.png';
 const options = new Options()
-    .setPixelSize(25);
+    .setPixelSize(20);
 
 var pixelizer = new Pixelizer(input, output, options);

@@ -32,6 +32,8 @@
             image = self.resizeImage(self, image);
             // Create a pixels representation of image.
             var oldPixels = self.createPixels(self, image, 1);
+            // Blur image by new pixel size first.
+            image.blur(self.options.pixelSize / 2);
             // Create a pixel representation of image with new pixel size.
             var newPixels = self.createPixels(self, image, self.options.pixelSize);
             // Save new pixels as output image.
