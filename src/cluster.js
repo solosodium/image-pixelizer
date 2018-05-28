@@ -36,7 +36,7 @@
             // TODO: these paramaeters should be fine tuned.
             this.mix = 0.5;
             this.iterations = 10;
-            this.threshold = 0.05;
+            this.threshold = 0.01;
             // Labels are for each individual old pixel, which indicates 
             // which cluster (new pixel) it belongs to.
             for (let x=0; x<this.oldPixels.width; x++) {
@@ -53,8 +53,9 @@
         cluster() {
             for (let i=0; i<this.iterations; i++) {
                 let acc = this.map();
-                if (acc / this.oldPixels.width / this.oldPixels.height 
-                    < this.threshold) {
+                let perc = acc / this.oldPixels.width / this.oldPixels.height;
+                console.log("Iteration: " + i + ", change is: " + perc);
+                if ( perc < this.threshold) {
                     break;
                 }
                 this.reduce();
@@ -132,23 +133,29 @@
             for (let x=0; x<this.oldPixels.width; x++) {
                 for (let y=0; y<this.oldPixels.height; y++) {
                     let l = this.readLabel(x, y);
-                    map[l.x + l.y * this.newPixels.width].push(l);
+                    map[l.x + l.y * this.newPixels.width].push({
+                        x: x,
+                        y: y
+                    });
                 }
             }
             // Assgin values to new pixels.
             for (let x=0; x<this.newPixels.width; x++) {
                 for (let y=0; y<this.newPixels.height; y++) {
                     let h = 0, s = 0, v = 0, a = 0;
-                    let ps = map[x + y * this.newPixels.width];
-                    for (let i=0; i<ps.length; i++) {
-                        h += ps[i].h / ps.length;
-                        s += ps[i].s / ps.length;
-                        v += ps[i].v / ps.length;
-                        a += ps[i].a / ps.length;
+                    let ls = map[x + y * this.newPixels.width];
+                    for (let i=0; i<ls.length; i++) {
+                        let l = ls[i];
+                        let p = this.oldPixels.getPixel(l.x, l.y);
+                        h += p.h / ls.length;
+                        s += p.s / ls.length;
+                        v += p.v / ls.length;
+                        a += p.a / ls.length;
                     }
                     this.newPixels.setPixel(x, y, new HSVA(h, s, v, a));
                 }
             }
+
         }
 
         /** Result is clusted new pixels. */
@@ -189,6 +196,10 @@
             let op = this.oldPixels.getPixel(x1, y1);
             let np = this.newPixels.getPixel(x2, y2);
             let cd = HSVA.difference(op, np);
+
+            //console.log(op, np);
+            //console.log(cd);
+
             // New pixel is transformed to old pixel equivalent.
             let x2t = x2 * size + (size - 1) / 2;
             let y2t = y2 * size + (size - 1) / 2;

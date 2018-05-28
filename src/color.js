@@ -24,14 +24,19 @@
             let m = Math.min(R, G, B);
             let C = M - m;
             let H = 0;
-            if (M === R) {
-                H = ((G - B) / C) % 6;
-            } else if (M === G) {
-                H = (B - R) / C + 2;
-            } else if (M === B) {
-                H = (R - G) / C + 4;
+            if (C !== 0) {
+                if (M === R) {
+                    H = ((G - B) / C) % 6;
+                } else if (M === G) {
+                    H = (B - R) / C + 2;
+                } else if (M === B) {
+                    H = (R - G) / C + 4;
+                }
             }
             H *= 60;
+            if (H < 0) {
+                H += 360;
+            }
             let V = M;
             let S = 0;
             if (V !== 0) {
