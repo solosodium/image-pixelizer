@@ -3,18 +3,27 @@
  * images to pixel art.
  */
 
-/** Import modules. */
+// Import modules.
+const fs = require('fs');
 const Options = require('./src/options');
 const Pixelizer = require('./src/pixelizer');
 
-/** Example. */
-const image = 'obama';
-const ext = '.jpg';
-const size = 10;
-
-const input = './images/' + image + ext;
-const output = './images/' + image + '.pixel.png';
+// Pixelizer options.
 const options = new Options()
-    .setPixelSize(size);
+    .setPixelSize(30);
 
-var pixelizer = new Pixelizer(input, output, options);
+// Process all images without 'pixel' in the name.
+let folder = 'images/';
+fs.readdir(folder, function(err, files) {
+    for (let i=0; i<files.length; i++) {
+        let file = files[i];
+        if (!file.includes('pixel')) {
+            let ext = file.match(/\..+$/i)[0];
+            let name = file.substring(0, file.indexOf(ext));
+            let input = folder + file;
+            let output = folder + name + '.pixel' + ext;
+            console.log('Pixelizing ' + input + ', output to ' + output);
+            var pixelizer = new Pixelizer(input, output, options);
+        }
+    }
+});

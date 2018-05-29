@@ -34,7 +34,7 @@
                     + newPixels.height + ') combination');
             }
             // TODO: these paramaeters should be fine tuned.
-            this.mix = 0.5;
+            this.mix = 0.85;
             this.iterations = 10;
             this.threshold = 0.01;
             // Labels are for each individual old pixel, which indicates 
@@ -196,10 +196,6 @@
             let op = this.oldPixels.getPixel(x1, y1);
             let np = this.newPixels.getPixel(x2, y2);
             let cd = HSVA.difference(op, np);
-
-            //console.log(op, np);
-            //console.log(cd);
-
             // New pixel is transformed to old pixel equivalent.
             let x2t = x2 * size + (size - 1) / 2;
             let y2t = y2 * size + (size - 1) / 2;
