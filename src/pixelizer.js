@@ -11,24 +11,27 @@
          * Load, pixelize, and output image.
          * @param {string} input complete path of the input file
          * @param {string} output complete path of the output file
-         * @param {Options} options options for pixelizer 
+         * @param {Options} options options for pixelizer
+         * @param {function} callback callback function
          */
-        constructor(input, output, options) {
+        constructor(input, output, options, callback) {
             // Cache parameters.
             this.input = input;
             this.output = output;
             this.options = options;
+            this.callback = callback;
             // Bootstrap.
             var self = this;
             Jimp.read(input, (error, image) => {
                 if (error) {
-                    throw error;
+                    callback(error);
+                } else {
+                    self.pixelizeImage(self, image);
                 }
-                self.loadImageSuccess(self, image);
             });
         }
 
-        loadImageSuccess(self, image) {
+        pixelizeImage(self, image) {
             // Resize image with new pixel size.
             image = self.resizeImage(self, image);
             // Create a pixels representation of image.
