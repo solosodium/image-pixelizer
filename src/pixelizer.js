@@ -81,6 +81,7 @@
         }
     }
 
+    Pixelizer.Options = Options;
     module.exports = Pixelizer;
 
 })();

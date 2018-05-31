@@ -5,12 +5,11 @@
 
 // Import modules.
 const fs = require('fs');
-const Options = require('./src/options');
 const Pixelizer = require('./src/pixelizer');
 
 // Pixelizer options.
 // TODO: change this options.
-const options = new Options()
+const options = new Pixelizer.Options()
     .setPixelSize(30);
 
 // Process all images without 'pixel' in the name.

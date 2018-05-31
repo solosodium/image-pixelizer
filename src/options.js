@@ -5,12 +5,16 @@
     class Options {
 
         constructor() {
-            // Images will have to be resized before 
+            // Pre-processing parameters.
             this.resizeAlign = Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE;
             this.resizeFilter = Jimp.RESIZE_BEZIER;
+            this.blurSize = 0.5;
+            // Processing parameters.
             this.pixelSize = 1;
+            // Post-processing parameters.
             this.jpgQuality = 90;
             this.pngFilter = Jimp.PNG_FILTER_AUTO;
+            // Return.
             return this;
         }
 
@@ -30,6 +34,17 @@
          */
         setResizeFilter(filter) {
             this.resizeFilter = filter;
+            return this;
+        }
+
+        /**
+         * Set blur size option.
+         * @param {number} size size of the blur radius before
+         *     pixelization, this is expressed as a fraction of the pixel
+         *     size, it has to be larger than 0
+         */
+        setBlurSize(size) {
+            this.blurSize = Math.max(0, size);
             return this;
         }
 
