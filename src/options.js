@@ -11,6 +11,9 @@
             this.blurSize = 0.5;
             // Processing parameters.
             this.pixelSize = 1;
+            this.colorDistRatio = 0.8;
+            this.maxIteration = 10;
+            this.pixelThreshold = 0.01;
             // Post-processing parameters.
             this.jpgQuality = 90;
             this.pngFilter = Jimp.PNG_FILTER_AUTO;
@@ -56,6 +59,38 @@
          */
         setPixelSize(size) {
             this.pixelSize = size;
+            return this;
+        }
+
+        /**
+         * Set color / distantance cost mixing ratio option.
+         * @param {number} ratio the ratio between color and distance
+         *     components of the cost calculation for old pixels (0 means
+         *     all distance contribution, 1 means all color contribution)
+         */
+        setColorDistRatio(ratio) {
+            this.colorDistRatio = Math.max(0, Math.min(ratio, 1));
+            return this;
+        }
+
+        /**
+         * Set the maximum number of cluster iteration option.
+         * @param {number} iteration maximum number of iteration to
+         *     perform before a hard stop on clustering
+         */
+        setMaxIteration(iteration) {
+            this.maxIteration = iteration;
+            return this;
+        }
+
+        /**
+         * Set the threshold pixel clustering fraction option.
+         * @param {number} threshold the minimum threshold fraction of old
+         *     pixels changed cluster labels during the last clustering
+         *     iteration 
+         */
+        setPixelThreshold(threshold) {
+            this.pixelThreshold = Math.max(0, Math.min(threshold, 1));
             return this;
         }
 

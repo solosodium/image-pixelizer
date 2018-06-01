@@ -9,7 +9,11 @@ describe('Options (options.js)', () => {
     it('constructor should set default parameters', () => {
         assert.equal(options.resizeAlign, Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE);
         assert.equal(options.resizeFilter, Jimp.RESIZE_BEZIER);
+        assert.equal(options.blurSize, 0.5);
         assert.equal(options.pixelSize, 1);
+        assert.equal(options.colorDistRatio, 0.8);
+        assert.equal(options.maxIteration, 10);
+        assert.equal(options.pixelThreshold, 0.01);
         assert.equal(options.jpgQuality, 90);
         assert.equal(options.pngFilter, Jimp.PNG_FILTER_AUTO);
     });
@@ -28,11 +32,45 @@ describe('Options (options.js)', () => {
         assert.equal(options.resizeFilter, Jimp.RESIZE_BEZIER);
     });
 
+    it('test set blur size', () => {
+        options.setBlurSize(0.1);
+        assert.equal(options.blurSize, 0.1);
+        options.setBlurSize(-1);
+        assert.equal(options.blurSize, 0);
+        options.setBlurSize(2);
+        assert.equal(options.blurSize, 2);
+    });
+
     it('test set pixel size', () => {
         options.setPixelSize(5);
         assert.equal(options.pixelSize, 5);
         options.setPixelSize(10);
         assert.equal(options.pixelSize, 10);
+    });
+
+    it('test set color distance ratio', () => {
+        options.setColorDistRatio(0.5);
+        assert.equal(options.colorDistRatio, 0.5);
+        options.setColorDistRatio(-1);
+        assert.equal(options.colorDistRatio, 0);
+        options.setColorDistRatio(2);
+        assert.equal(options.colorDistRatio, 1);
+    });
+
+    it('test set max iteration', () => {
+        options.setMaxIteration(1);
+        assert.equal(options.maxIteration, 1);
+        options.setMaxIteration(20);
+        assert.equal(options.maxIteration, 20);
+    });
+
+    it('test set pixel threshold', () => {
+        options.setPixelThreshold(0.1);
+        assert.equal(options.pixelThreshold, 0.1);
+        options.setPixelThreshold(-1);
+        assert.equal(options.pixelThreshold, 0);
+        options.setPixelThreshold(2);
+        assert.equal(options.pixelThreshold, 1);
     });
 
     it('test set JPEG image quality', () => {
