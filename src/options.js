@@ -13,7 +13,8 @@
             this.pixelSize = 1;
             this.colorDistRatio = 0.8;
             this.maxIteration = 10;
-            this.pixelThreshold = 0.01;
+            this.clusterThreshold = 0.01;
+            this.voidThreshold = 0.05;
             // Post-processing parameters.
             this.jpgQuality = 90;
             this.pngFilter = Jimp.PNG_FILTER_AUTO;
@@ -22,7 +23,7 @@
         }
 
         /**
-         * Set resize align option(s).
+         * Set resize align.
          * @param {*} align e.g. Jimp.HORIZONTAL_ALIGN_*, or 
          *     Jimp.VERTICAL_ALIGN_*, options can be joined by |
          */
@@ -32,7 +33,7 @@
         }
 
         /**
-         * Set resize filter option.
+         * Set resize filter.
          * @param {*} filter e.g. Jimp.RESIZE_*
          */
         setResizeFilter(filter) {
@@ -41,10 +42,10 @@
         }
 
         /**
-         * Set blur size option.
+         * Set blur size.
          * @param {number} size size of the blur radius before
          *     pixelization, this is expressed as a fraction of the pixel
-         *     size, it has to be larger than 0
+         *     size, it has to be larger than 0, but not limit to 1
          */
         setBlurSize(size) {
             this.blurSize = Math.max(0, size);
@@ -52,10 +53,9 @@
         }
 
         /**
-         * Set the pixel size option.
-         * @param {number} size new pixel size, which means a block of
-         *     pixels with area size * size in the old image will be fused
-         *     into a single pixel in the new image 
+         * Set the pixel size.
+         * @param {number} size a unit to measure the number of old pixels
+         *     represented in a new pixel, which should be size * size
          */
         setPixelSize(size) {
             this.pixelSize = size;
@@ -63,10 +63,12 @@
         }
 
         /**
-         * Set color / distantance cost mixing ratio option.
-         * @param {number} ratio the ratio between color and distance
-         *     components of the cost calculation for old pixels (0 means
-         *     all distance contribution, 1 means all color contribution)
+         * Set color / distantance cost mixing ratio.
+         * @param {number} ratio when calculating the cost for an old
+         *     pixel to be clustered to a specific new pixel, the cost is
+         *     evaluated by both color and distance cost, this ratio
+         *     controls the mixing of the two costs (0 means all distance 
+         *     contribution, 1 means all color contribution)
          */
         setColorDistRatio(ratio) {
             this.colorDistRatio = Math.max(0, Math.min(ratio, 1));
@@ -74,9 +76,9 @@
         }
 
         /**
-         * Set the maximum number of cluster iteration option.
-         * @param {number} iteration maximum number of iteration to
-         *     perform before a hard stop on clustering
+         * Set the maximum number of clustering iterations.
+         * @param {number} iteration maximum number of iterations to
+         *     perform before a hard stop during pixelization
          */
         setMaxIteration(iteration) {
             this.maxIteration = iteration;
@@ -84,18 +86,32 @@
         }
 
         /**
-         * Set the threshold pixel clustering fraction option.
-         * @param {number} threshold the minimum threshold fraction of old
-         *     pixels changed cluster labels during the last clustering
-         *     iteration 
+         * Set the threshold for pixel clustering stop.
+         * @param {number} threshold during each clustering iteration, if
+         *     the number of old pixels that change their cluster label
+         *     divided by the total number of old pixels is smaller than
+         *     this threshold, hard stop on clustering iteration
          */
-        setPixelThreshold(threshold) {
-            this.pixelThreshold = Math.max(0, Math.min(threshold, 1));
+        setClusterThreshold(threshold) {
+            this.clusterThreshold = Math.max(0, Math.min(threshold, 1));
             return this;
         }
 
         /**
-         * Set JPEG iamge quality option.
+         * Set the threshold for pixel void detection.
+         * @param {number} threshold during each clustering iteration, if
+         *     the number of old pixels clustered to a specific new pixel
+         *     divided by the number of pixels represented in a new pixel
+         *     (size * size) is smaller than this threshold, this specific
+         *     new pixel is classified as 'void' pixel, and special
+         *     processing will be performed to get this new pixel value
+         */
+        setVoidThreshold(threshold) {
+            this.voidThreshold = Math.max(0, Math.min(threshold, 1));
+        }
+
+        /**
+         * Set JPEG iamge quality.
          * @param {number} quality a number from 0 to 100, higher the
          *     better quality 
          */
@@ -105,7 +121,7 @@
         }
 
         /**
-         * Set PNG image filter option.
+         * Set PNG image filter.
          * @param {*} filter e.g. Jimp.PNG_FILTER_*
          */
         setPngFilter(filter) {
