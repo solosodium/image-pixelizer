@@ -7,24 +7,25 @@
 const fs = require('fs');
 const Pixelizer = require('./src/pixelizer');
 
-// Pixelizer options.
-// TODO: change this options.
+// TODO: change this Pixelizer options.
 const options = new Pixelizer.Options()
     .setPixelSize(30);
 
 // Process all images without 'pixel' in the name.
 const folder = 'images/';
 const extPattern = /\..+$/i;
+const keyword = 'pixel';
 fs.readdir(folder, function(err, files) {
     for (let i=0; i<files.length; i++) {
         let file = files[i];
-        if (!file.includes('pixel')) {
+        if (!file.includes(keyword)) {
             let ext = file.match(extPattern)[0];
             let name = file.substring(0, file.indexOf(ext));
             let input = folder + file;
-            let output = folder + name + '.pixel' + ext;
-            console.log('Pixelizing ' + input + ', output to ' + output);
-            var pixelizer = new Pixelizer(input, output, options);
+            let output = folder + name + '.' + keyword + ext;
+            // Actual pixelizing.
+            var pixelizer = new Pixelizer();
+            pixelizer.read(input).then(pixelizer.test);
         }
     }
 });
