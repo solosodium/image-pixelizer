@@ -22,18 +22,72 @@
          * Read an input image file.
          * @param {string} input file path to input image file 
          */
-        read(input) {
+        static read(input) {
             Log.info('reading input image file from: ' + input);
             return Jimp.read(input);
         }
 
-        test(image) {
-            console.log(image);
+        /**
+         * Pixelize image with options.
+         * @param {Jimp} image input image to be pixelized
+         * @param {Options} options pixeliation options
+         */
+        process(image, options) {
+            // Step 1: resize input image.
+            let resizedImage = resizeImage(image, options);
+            // Step 2: convert resized image to pixels.
+            let oldPixels = createPixels(resizedImage, 1);
+            // Step 3: blur resized image.
+            resizedImage.blur(options.pixelSize * options.blurSize);
+            // Step 4: create pixels with new pixel size.
+            let newPixels = 
+                this.createPixels(resizedImage, options.pixelSize);
+            // Step 5: clustering pixels.
+
+
             return new Promise((resolve, reject) => {
-                resolve('test');
+
             });
         }
 
+        /**
+         * Resize input image width and height to be multiple of new pixel 
+         * size, so there will be no artifact lines after pixelization.
+         * @param {Jimp} image 
+         * @param {Options} options
+         * @returns {Jimp}
+         */
+        static resizeImage(image, options) {
+            // Gather parameters.
+            let size = options.pixelSize;
+            let width = image.bitmap.width;
+            let height = image.bitmap.height;
+            let resizeAlign = self.options.resizeAlign;
+            let resizeFilter = self.options.resizeFilter;
+            // New width and height should be quantized by new pixel size.
+            let fixedWidth = Math.floor(width / size) * size;
+            let fixedHeight = Math.floor(height / size) * size;
+            // Use cover mode for resize.
+            return image.cover(fixedWidth, fixedHeight, resizeAlign, resizeFilter);
+        }
+
+        /**
+         * Convert image to pixels controlled by pixel size.
+         * @param {Jimp} image 
+         * @param {number} size 
+         * @return {Pixels}
+         */
+        createPixels(image, size) {
+            let width = image.bitmap.width;
+            let height = image.bitmap.height;
+            let w = Math.floor(width / size);
+            let h = Math.floor(height / size);
+            return new Pixels(w, h, size, image);
+        }
+
+
+
+        
         pixelizeImage(self, image) {
             // Resize image with new pixel size.
             image = self.resizeImage(self, image);
@@ -50,26 +104,9 @@
             self.saveImage(self, newPixels.toImage());
         }
 
-        resizeImage(self, image) {
-            let size = self.options.pixelSize;
-            let width = image.bitmap.width;
-            let height = image.bitmap.height;
-            // New width and height should be quantized by new pixel size.
-            let fixedWidth = Math.floor(width / size) * size;
-            let fixedHeight = Math.floor(height / size) * size;
-            // Use cover mode.
-            let resizeAlign = self.options.resizeAlign;
-            let resizeFilter = self.options.resizeFilter;
-            return image.cover(fixedWidth, fixedHeight, resizeAlign, resizeFilter);
-        }
+        
 
-        createPixels(self, image, size) {
-            let width = image.bitmap.width;
-            let height = image.bitmap.height;
-            let w = Math.floor(width / size);
-            let h = Math.floor(height / size);
-            return new Pixels(w, h, size, image);
-        }
+        
 
         createCluster(self, oldPixels, newPixels) {
             return new Cluster(oldPixels, newPixels);

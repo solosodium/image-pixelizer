@@ -24,8 +24,9 @@ fs.readdir(folder, function(err, files) {
             let input = folder + file;
             let output = folder + name + '.' + keyword + ext;
             // Actual pixelizing.
-            var pixelizer = new Pixelizer();
-            pixelizer.read(input).then(pixelizer.test);
+            Pixelizer.read(input).then((image) => {
+                return Pixelizer.process(image)
+            });
         }
     }
 });

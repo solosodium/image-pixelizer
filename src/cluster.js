@@ -2,6 +2,7 @@
 
     const Pixels = require('./pixels');
     const HSVA = require('./color').HSVA;
+    const Options = require('./options');
 
     class Cluster {
         
@@ -9,8 +10,9 @@
          * Default constructor.
          * @param {Pixels} oldPixels pixel representation of the old image 
          * @param {Pixels} newPixels pixel representation of the new image
+         * @param {options} options pixelization options
          */
-        constructor(oldPixels, newPixels) {
+        constructor(oldPixels, newPixels, options) {
             this.oldPixels = oldPixels;
             this.newPixels = newPixels;
             this.labels = [];
@@ -60,6 +62,7 @@
                 }
                 this.reduce();
             }
+            return this;
         }
 
         /** Assgin old pixels with labels. */
