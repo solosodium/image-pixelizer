@@ -1,6 +1,7 @@
 const assert = require('assert');
 const Pixels = require('../src/pixels');
 const Cluster = require('../src/cluster');
+const Options = require('../src/options');
 
 describe('Cluster (cluster.js)', () => {
     
@@ -21,23 +22,17 @@ describe('Cluster (cluster.js)', () => {
     let oldPixels = new Pixels(10, 10, 1, mockImage);
     let newPixels = new Pixels(5, 5, 2, mockImage);
 
+    let options = new Options().setPixelSize(2);
+
     it('constructor should initialize the corret values', () => {
-        let cluster = new Cluster(oldPixels, newPixels);
+        let cluster = new Cluster(oldPixels, newPixels, options);
         assert.deepEqual(cluster.oldPixels, oldPixels);
         assert.deepEqual(cluster.newPixels, newPixels);
         assert.deepEqual(cluster.labels[10], { x: -1, y: -1 });
     });
 
-    it('constructor should throw exception for invalid inputs', () => {
-        let badNewPixels = new Pixels(3, 3, 3, mockImage);
-        assert.throws(
-            () => new Cluster(oldPixels, badNewPixels), 
-            Error
-        );
-    });
-
     it('calculate pixel distance exceptions', () => {
-        let cluster = new Cluster(oldPixels, newPixels);
+        let cluster = new Cluster(oldPixels, newPixels, options);
         assert.throws(
             () => cluster.pixelDistance(-1, 20, 0, 0, 0, 0),
             Error
@@ -53,13 +48,13 @@ describe('Cluster (cluster.js)', () => {
     });
 
     it('test pixel distance calculation', () => {
-        let cluster = new Cluster(oldPixels, newPixels);
+        let cluster = new Cluster(oldPixels, newPixels, options);
         let distance = cluster.pixelDistance(1, 1, 0, 0, 2, 0.5);
         assert(distance >= 0 && distance <= 1);
     });
 
     it('dry run cluster map function', () => {
-        let cluster = new Cluster(oldPixels, newPixels);
+        let cluster = new Cluster(oldPixels, newPixels, options);
         let acc = cluster.map();
         assert.equal(acc, 10 * 10);
     });

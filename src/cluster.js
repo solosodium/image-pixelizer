@@ -3,87 +3,57 @@
     const Pixels = require('./pixels');
     const HSVA = require('./color').HSVA;
     const Options = require('./options');
+    const Labels = require('./labels');
+    const Log = require('./log');
 
     class Cluster {
         
         /**
          * Default constructor.
-         * @param {Pixels} oldPixels pixel representation of the old image 
-         * @param {Pixels} newPixels pixel representation of the new image
-         * @param {options} options pixelization options
+         * @param {Pixels} oldPixels pixels of the old image 
+         * @param {Pixels} newPixels pixels of the new image
+         * @param {Options} options pixelization options
          */
         constructor(oldPixels, newPixels, options) {
             this.oldPixels = oldPixels;
             this.newPixels = newPixels;
-            this.labels = [];
-            // Verify new pixel size is correct.
-            let widthSize = Math.floor(oldPixels.width / newPixels.width);
-            let heightSize 
-                = Math.floor(oldPixels.height / newPixels.height);
-            if (widthSize !== heightSize) {
-                throw new Error('width(' + widthSize + ') and height('
-                    + heightSize + ') sizes fail to match');
-            }
-            this.size = widthSize;
-            if (oldPixels.width !== this.size * newPixels.width) {
-                throw new Error('invalid old width(' + oldPixels.width
-                    + '), size(' + this.size + '), new width(' 
-                    + newPixels.width + ') combination');
-            }
-            if (oldPixels.height !== this.size * newPixels.height) {
-                throw new Error('invalid old height(' + oldPixels.height
-                    + '), size(' + this.size + '), new height(' 
-                    + newPixels.height + ') combination');
-            }
-            // TODO: these paramaeters should be fine tuned.
-            this.mix = 0.85;
-            this.iterations = 10;
-            this.threshold = 0.01;
-            // Labels are for each individual old pixel, which indicates 
-            // which cluster (new pixel) it belongs to.
-            for (let x=0; x<this.oldPixels.width; x++) {
-                for (let y=0; y<this.oldPixels.height; y++) {
-                    this.writeLabel(x, y, {
-                        x: -1,
-                        y: -1
-                    });
-                }
-            }
+            this.options = options;
+            this.labels = new Labels(
+                oldPixels.width, oldPixels.height, options.pixelSize);
         }
 
-        /** Clustering algorithm, compute the new pixels. */
+        /** Map old pixels to new pixels, and update new pixels. */
         cluster() {
-            for (let i=0; i<this.iterations; i++) {
-                let acc = this.map();
-                let perc = acc / this.oldPixels.width / this.oldPixels.height;
-                console.log("Iteration: " + i + ", change is: " + perc);
-                if ( perc < this.threshold) {
+            Log.info("Clustering started.");
+            for (let i=0; i<this.options.maxIteration; i++) {
+                let pixelChangeCount = this.map();
+                this.reduce();
+                let percentage = pixelChangeCount 
+                    / this.oldPixels.width / this.oldPixels.height;
+                Log.info("Cluster iteration " + i
+                    + ", change % is "+ percentage);
+                if (percentage < this.options.clusterThreshold) {
                     break;
                 }
-                this.reduce();
             }
+            Log.info("Clustering done.");
             return this;
         }
 
-        /** Assgin old pixels with labels. */
+        /** Assgin old pixels with new pixel labels. */
         map() {
             // Set an accumulator for number of changed labels.
             let acc = 0;
             for (let x=0; x<this.oldPixels.width; x++) {
                 for (let y=0; y<this.oldPixels.height; y++) {
-                    // Get default label (new pixel it belongs to).
-                    let label = {
-                        x: Math.floor(x / this.size),
-                        y: Math.floor(y / this.size)
-                    };
-                    // Generate permutation (9 neighbors).
+                    // Get corresponding new pixel position.
+                    let xx = Math.floor(x / this.options.pixelSize);
+                    let yy = Math.floor(x / this.options.pixelSize);
+                    // Generate 9 neighboring pixels permutation.
                     let permutations = [
-                        { x: -1, y: -1 }, { x:  0, y: -1 },
-                        { x:  1, y: -1 },   // Row 1
-                        { x: -1, y:  0 }, { x:  0, y:  0 },
-                        { x:  1, y:  0 },   // Row 2
-                        { x: -1, y:  1 }, { x:  0, y:  1 },
-                        { x:  1, y:  1 }    // Row 3
+                        {x: -1, y: -1}, {x: 0, y: -1}, {x: 1, y: -1},
+                        {x: -1, y:  0}, {x: 0, y:  0}, {x: 1, y:  0},
+                        {x: -1, y:  1}, {x: 0, y:  1}, {x: 1, y:  1}
                     ];
                     // Iterate through all neighbors.
                     let permutation;
@@ -215,14 +185,6 @@
             let pd = dxy / size;
             // Return distance with mix factor.
             return mix * cd + (1 - mix) * pd;
-        }
-        
-        readLabel(x, y) {
-            return this.labels[x + y * this.oldPixels.width];
-        }
-
-        writeLabel(x, y, val) {
-            this.labels[x + y * this.oldPixels.width] = val;
         }
 
     }
