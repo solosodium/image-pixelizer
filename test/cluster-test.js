@@ -7,28 +7,30 @@ describe('Cluster (cluster.js)', () => {
     
     let mockImage = {
         bitmap: {
-            width: 10,
-            height: 10,
+            width: 400,
+            height: 200,
             data: []
         },
         getPixelIndex: function(x, y) {
-            return (x + y * 10) * 4;
+            return (x + y * 400) * 4;
         }
     };
-    for (var i=0; i<10 * 10 * 4; i++) {
+    for (var i=0; i<400 * 200 * 4; i++) {
         mockImage.bitmap.data.push(i % 255);
     }
 
-    let oldPixels = new Pixels(10, 10, 1, mockImage);
-    let newPixels = new Pixels(5, 5, 2, mockImage);
+    let oldPixels = new Pixels(400, 200, 1, mockImage);
+    let newPixels = new Pixels(20, 10, 20, mockImage);
 
-    let options = new Options().setPixelSize(2);
+    let options = new Options().setPixelSize(20);
 
     it('constructor should initialize the corret values', () => {
         let cluster = new Cluster(oldPixels, newPixels, options);
         assert.deepEqual(cluster.oldPixels, oldPixels);
         assert.deepEqual(cluster.newPixels, newPixels);
-        assert.deepEqual(cluster.labels[10], { x: -1, y: -1 });
+        assert.deepEqual(cluster.options, options);
+        assert.notEqual(cluster.labels, null);
+        assert.notEqual(cluster.permutations, null);
     });
 
     it('calculate pixel distance exceptions', () => {

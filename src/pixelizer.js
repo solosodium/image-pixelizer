@@ -23,7 +23,7 @@
          * @param {string} input file path to input image file 
          */
         static read(input) {
-            Log.info('reading input image file from: ' + input);
+            Log.info("Reading input image file from: " + input);
             return Jimp.read(input);
         }
 
@@ -87,7 +87,7 @@
 
 
 
-        
+
         pixelizeImage(self, image) {
             // Resize image with new pixel size.
             image = self.resizeImage(self, image);

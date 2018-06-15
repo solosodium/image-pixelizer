@@ -15,11 +15,19 @@
          * @param {Options} options pixelization options
          */
         constructor(oldPixels, newPixels, options) {
+            // Cache parameters.
             this.oldPixels = oldPixels;
             this.newPixels = newPixels;
             this.options = options;
+            // Create labels.
             this.labels = new Labels(
                 oldPixels.width, oldPixels.height, options.pixelSize);
+            // Create permutations for 9 neighboring pixels.
+            this.permutations = [
+                {x: -1, y: -1}, {x: 0, y: -1}, {x: 1, y: -1},
+                {x: -1, y:  0}, {x: 0, y:  0}, {x: 1, y:  0},
+                {x: -1, y:  1}, {x: 0, y:  1}, {x: 1, y:  1}
+            ];
         }
 
         /** Map old pixels to new pixels, and update new pixels. */
@@ -42,52 +50,36 @@
 
         /** Assgin old pixels with new pixel labels. */
         map() {
-            // Set an accumulator for number of changed labels.
+            // Set an accumulator for number of changed old pixels.
             let acc = 0;
             for (let x=0; x<this.oldPixels.width; x++) {
                 for (let y=0; y<this.oldPixels.height; y++) {
-                    // Get corresponding new pixel position.
-                    let xx = Math.floor(x / this.options.pixelSize);
-                    let yy = Math.floor(x / this.options.pixelSize);
-                    // Generate 9 neighboring pixels permutation.
-                    let permutations = [
-                        {x: -1, y: -1}, {x: 0, y: -1}, {x: 1, y: -1},
-                        {x: -1, y:  0}, {x: 0, y:  0}, {x: 1, y:  0},
-                        {x: -1, y:  1}, {x: 0, y:  1}, {x: 1, y:  1}
-                    ];
                     // Iterate through all neighbors.
-                    let permutation;
+                    let position;
                     let cost = Number.MAX_VALUE;
-                    for (let n=0; n<permutations.length; n++) {
-                        let xx = label.x + permutations[n].x;
-                        let yy = label.y + permutations[n].y;
+                    for (let n=0; n<this.permutations.length; n++) {
+                        // Get new pixel position.
+                        let xx = Math.floor(x / this.options.pixelSize)
+                            + this.permutations[n].x;
+                        let yy = Math.floor(y / this.options.pixelSize) 
+                            + this.permutations[n].y;
+                        // Calculate cost if in bound.
                         if (xx >= 0 && xx < this.newPixels.width && 
                             yy >= 0 && yy < this.newPixels.height) {
                             let c = this.pixelDistance(
-                                x, y,       // Old pixel index
-                                xx, yy,     // New pixel index
-                                this.size,  // New pixel size
-                                this.mix    // Distance mix
+                                x, y, xx, yy,
+                                this.options.pixelSize,
+                                this.options.colorDistRatio
                             );
                             if (c < cost) {
                                 cost = c;
-                                permutation = permutations[n];
+                                position = { x: xx, y: yy };
                             }
                         }
                     }
-                    // Update new label.
-                    label.x = label.x + permutation.x
-                    label.y = label.y + permutation.y;
-                    // Check if old label is changed to a new label.
-                    let l = this.readLabel(x, y);
-                    if (l.x !== label.x || l.y !== label.y) {
-                        acc++;
-                    }
-                    // Save new label.
-                    this.writeLabel(x, y, {
-                        x: label.x,
-                        y: label.y
-                    });
+                    // Update label.
+                    this.labels.setLabel(x, y, position.x, position.y);
+                    acc += this.labels.getLabel(x, y).changed ? 1 : 0;
                 }
             }
             return acc;
