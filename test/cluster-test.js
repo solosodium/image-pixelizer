@@ -33,6 +33,18 @@ describe('Cluster (cluster.js)', () => {
         assert.notEqual(cluster.permutations, null);
     });
 
+    it('dry run cluster map function', () => {
+        let cluster = new Cluster(oldPixels, newPixels, options);
+        let acc = cluster.map();
+        assert.equal(acc, 1439);
+    });
+
+    it('dry run cluster reduce function', () => {
+        let cluster = new Cluster(oldPixels, newPixels, options);
+        let acc = cluster.map();
+        cluster.reduce();
+    });
+
     it('calculate pixel distance exceptions', () => {
         let cluster = new Cluster(oldPixels, newPixels, options);
         assert.throws(
@@ -53,12 +65,6 @@ describe('Cluster (cluster.js)', () => {
         let cluster = new Cluster(oldPixels, newPixels, options);
         let distance = cluster.pixelDistance(1, 1, 0, 0, 2, 0.5);
         assert(distance >= 0 && distance <= 1);
-    });
-
-    it('dry run cluster map function', () => {
-        let cluster = new Cluster(oldPixels, newPixels, options);
-        let acc = cluster.map();
-        assert.equal(acc, 10 * 10);
     });
 
 });

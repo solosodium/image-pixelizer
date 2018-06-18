@@ -87,7 +87,7 @@
 
         /** Based on assgined labels, calculate new pixel values. */
         reduce() {
-            // Tansform labels to new pixels space. Map will be map new 
+            // Tansform labels to new pixels space. Map will be map new
             // pixel to a list of old pixels.
             let map = [];
             for (let x=0; x<this.newPixels.width; x++) {

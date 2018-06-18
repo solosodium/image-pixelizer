@@ -18,17 +18,18 @@
             // Label is for each old pixel to map to a new pixel.
             this.labels = Array(this.oldWidth)
                 .fill().map(() => Array(this.oldHeight));
-            // Count is the number of old pixels mapped to a new pixel. 
-            this.counts = Array(this.newWidth)
-                .fill().map(() => Array(this.newHeight).fill(0));
+            // List is an array of old pixels clustered to a new pixel.
+            this.lists = Array(this.newWidth)
+                .fill().map(() => Array(this.newHeight)
+                    .fill().map(() => Array(0)));
             // Initialize labels and counts.
             for (let x=0; x<this.oldWidth; x++) {
                 for (let y=0; y<this.oldHeight; y++) {
                     // Get new pixel position.
                     let xx = Math.floor(x / size);
                     let yy = Math.floor(y / size);
-                    this.labels[x][y] = { x: xx, y: yy, changed: true };
-                    this.counts[xx][yy] += 1;
+                    this.labels[x][y] = {x: xx, y: yy, changed: true};
+                    this.lists[xx][yy].push({ x: x, y: y });
                 }
             }
         }
@@ -45,39 +46,44 @@
         }
 
         /**
-         * Change label at old pixel at (x, y) to (labelX, labelY). 
+         * Change label at old pixel at (x, y) to (xx, yy). 
          * @param {number} x 
          * @param {number} y 
-         * @param {number} labelX 
-         * @param {number} labelY 
+         * @param {number} xx
+         * @param {number} yy
          */
-        setLabel(x, y, labelX, labelY) {
+        setLabel(x, y, xx, yy) {
             x = Math.max(0, Math.min(x, this.oldWidth - 1));
             y = Math.max(0, Math.min(y, this.oldHeight - 1));
-            labelX = Math.max(0, Math.min(labelX, this.newWidth - 1));
-            labelY = Math.max(0, Math.min(labelY, this.newHeight - 1));
+            xx = Math.max(0, Math.min(xx, this.newWidth - 1));
+            yy = Math.max(0, Math.min(yy, this.newHeight - 1));
             let label = this.getLabel(x, y);
-            // Update counts.
-            this.counts[label.x][label.y] -= 1;
-            this.counts[labelX][labelY] += 1;
+            let pos = {x: x, y: y};
+            // Update lists.
+            let idx = this.lists[label.x][label.y]
+                .findIndex(pos => pos.x == x && pos.y == y);
+            if (idx > -1) {
+                this.lists[label.x][label.y].splice(idx, 1);
+                this.lists[xx][yy].push(pos);
+            }
             // Update labels.
-            let changed = (label.x !== labelX) || (label.y !== labelY);
+            let changed = (label.x !== xx) || (label.y !== yy);
             this.labels[x][y] = {
-                x: labelX,
-                y: labelY,
+                x: xx,
+                y: yy,
                 changed: changed
             }
         }
 
         /**
-         * Get the number of old pixels clustered to new pixel at (x, y).
-         * @param {number} x 
-         * @param {number} y 
+         * Get a list of old pixels clustered to new pixel at (xx, yy).
+         * @param {number} xx
+         * @param {number} yy
          */
-        getCount(x, y) {
-            x = Math.max(0, Math.min(x, this.newWidth - 1));
-            y = Math.max(0, Math.min(y, this.newHeight - 1));
-            return this.counts[x][y];
+        getList(xx, yy) {
+            xx = Math.max(0, Math.min(xx, this.newWidth - 1));
+            yy = Math.max(0, Math.min(yy, this.newHeight - 1));
+            return this.lists[xx][yy];
         }
 
     }

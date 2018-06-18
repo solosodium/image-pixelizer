@@ -7,8 +7,8 @@ describe('Labels (labels.js)', () => {
         let labels = new Labels(410, 210, 20);
         assert.equal(labels.labels.length, 410);
         assert.equal(labels.labels[0].length, 210);
-        assert.equal(labels.counts.length, Math.ceil(410 / 20));
-        assert.equal(labels.counts[0].length, Math.ceil(210 / 20));
+        assert.equal(labels.lists.length, Math.ceil(410 / 20));
+        assert.equal(labels.lists[0].length, Math.ceil(210 / 20));
         let label = labels.getLabel(155, 89);
         assert.deepEqual(label, { x: 7, y: 4, changed: true });
     });
@@ -27,13 +27,13 @@ describe('Labels (labels.js)', () => {
     });
 
     
-    it('test get count function', () => {
+    it('test get list function', () => {
         let labels = new Labels(410, 210, 20);
-        let oldCount1 = labels.getCount(9, 4);
-        let oldCount2 = labels.getCount(9, 3);
+        let oldCount1 = labels.getList(9, 4).length;
+        let oldCount2 = labels.getList(9, 3).length;
         labels.setLabel(195, 91, 9, 3);
-        let newCount1 = labels.getCount(9, 4);
-        let newCount2 = labels.getCount(9, 3);
+        let newCount1 = labels.getList(9, 4).length;
+        let newCount2 = labels.getList(9, 3).length;
         assert.equal(newCount1, oldCount1 - 1);
         assert.equal(newCount2, oldCount2 + 1);
     });
