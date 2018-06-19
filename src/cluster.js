@@ -87,40 +87,25 @@
 
         /** Based on assgined labels, calculate new pixel values. */
         reduce() {
-            // Tansform labels to new pixels space. Map will be map new
-            // pixel to a list of old pixels.
-            let map = [];
-            for (let x=0; x<this.newPixels.width; x++) {
-                for (let y=0; y<this.newPixels.height; y++) {
-                    map[x + y * this.newPixels.width] = [];
-                }
-            }
-            for (let x=0; x<this.oldPixels.width; x++) {
-                for (let y=0; y<this.oldPixels.height; y++) {
-                    let l = this.readLabel(x, y);
-                    map[l.x + l.y * this.newPixels.width].push({
-                        x: x,
-                        y: y
-                    });
-                }
-            }
-            // Assgin values to new pixels.
-            for (let x=0; x<this.newPixels.width; x++) {
-                for (let y=0; y<this.newPixels.height; y++) {
+            // Go through new pixels and get the list of old pixels.
+            for (let xx=0; xx<this.newPixels.width; xx++) {
+                for (let yy=0; yy<this.newPixels.height; yy++) {
+                    // Get the list of old pixels.
+                    let list = this.labels.getList(xx, yy);
+                    // Aggregate pixels.
                     let h = 0, s = 0, v = 0, a = 0;
-                    let ls = map[x + y * this.newPixels.width];
-                    for (let i=0; i<ls.length; i++) {
-                        let l = ls[i];
-                        let p = this.oldPixels.getPixel(l.x, l.y);
-                        h += p.h / ls.length;
-                        s += p.s / ls.length;
-                        v += p.v / ls.length;
-                        a += p.a / ls.length;
+                    for (let i=0; i<list.length; i++) {
+                        let pos = list[i];
+                        let pixel = this.oldPixels.getPixel(pos.x, pos.y);
+                        h += pixel.h / list.length;
+                        s += pixel.s / list.length;
+                        v += pixel.v / list.length;
+                        a += pixel.a / list.length;
                     }
+                    // Set new pixel value.
                     this.newPixels.setPixel(x, y, new HSVA(h, s, v, a));
                 }
             }
-
         }
 
         /** Result is clusted new pixels. */
@@ -129,37 +114,31 @@
         }
 
         /**
-         * Calculate the distance between old pixel 1 and new pixel 2.
+         * Calculate the distance between old pixel and new pixel.
          * The distance is calculated for both color difference and 
          * physical distance (evaluated as minimum 1D Manhattan). The old
          * and new pixels should be neighbors, which means once new pixel
          * is transformed to old pixel space, their 1D Manhattan distance
          * should be less than new pixel size.
-         * @param {number} x1 old pixel 1 x index 
-         * @param {number} y1 old pixel 1 y index
-         * @param {number} x2 new pixel 2 x index
-         * @param {number} y2 new pixel 2 y index
+         * @param {number} x old pixel x index 
+         * @param {number} y old pixel y index
+         * @param {number} xx new pixel x index
+         * @param {number} yy new pixel y index
          * @param {number} size size of the new pixel
          * @param {number} mix mixing ratio of color and physical distance
          *     the ratio should between 0 to 1, and value is proportional
          *     to the color distance (mix), and complementary proportional
          *     to physical distance (1 - mix)
          */
-        pixelDistance(x1, y1, x2, y2, size, mix) {
-            // Precheck pixel index range.
-            if (x1 < 0 || x1 >= this.oldPixels.width 
-                || y1 < 0 || y1 >= this.oldPixels.height) {
-                throw new Error('x1 (' + x1 + '), y1 (' + y1
-                    + ') is out of range');
-            }
-            if (x2 < 0 || x2 >= this.newPixels.width 
-                || y2 < 0 || y2 >= this.newPixels.height) {
-                throw new Error('x2 (' + x2 + '), y2 (' + y2
-                    + ') is out of range');
-            }
+        pixelDistance(x, y, xx, yy, size, mix) {
+            // Bound pixel positions.
+            x = Math.max(0, Math.min(x, this.oldPixels.width - 1));
+            y = Math.max(0, Math.min(y, this.oldPixels.height - 1));
+            xx = Math.max(0, Math.min(xx, this.newPixels.width - 1));
+            yy = Math.max(0, Math.min(yy, this.newPixels.height - 1));
             // Calculate color distance.
-            let op = this.oldPixels.getPixel(x1, y1);
-            let np = this.newPixels.getPixel(x2, y2);
+            let oldPixel = this.oldPixels.getPixel(x, y);
+            let newPixel = this.newPixels.getPixel(xx, yy);
             let cd = HSVA.difference(op, np);
             // New pixel is transformed to old pixel equivalent.
             let x2t = x2 * size + (size - 1) / 2;
