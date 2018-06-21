@@ -66,11 +66,7 @@
                         // Calculate cost if in bound.
                         if (xx >= 0 && xx < this.newPixels.width && 
                             yy >= 0 && yy < this.newPixels.height) {
-                            let c = this.pixelDistance(
-                                x, y, xx, yy,
-                                this.options.pixelSize,
-                                this.options.colorDistRatio
-                            );
+                            let c = this.pixelDifference(x, y, xx, yy);
                             if (c < cost) {
                                 cost = c;
                                 position = { x: xx, y: yy };
@@ -94,16 +90,24 @@
                     let list = this.labels.getList(xx, yy);
                     // Aggregate pixels.
                     let h = 0, s = 0, v = 0, a = 0;
-                    for (let i=0; i<list.length; i++) {
-                        let pos = list[i];
-                        let pixel = this.oldPixels.getPixel(pos.x, pos.y);
-                        h += pixel.h / list.length;
-                        s += pixel.s / list.length;
-                        v += pixel.v / list.length;
-                        a += pixel.a / list.length;
+                    // Check if this new pixel is a void.
+                    if (list.length / this.options.pixelSize 
+                        / this.options.pixelSize 
+                        > this.options.voidThreshold) {
+                        for (let i=0; i<list.length; i++) {
+                            let pos = list[i];
+                            let pixel 
+                                = this.oldPixels.getPixel(pos.x, pos.y);
+                            h += pixel.h / list.length;
+                            s += pixel.s / list.length;
+                            v += pixel.v / list.length;
+                            a += pixel.a / list.length;
+                        }
+                    } else {
+                        console.log("VOID");
                     }
                     // Set new pixel value.
-                    this.newPixels.setPixel(x, y, new HSVA(h, s, v, a));
+                    this.newPixels.setPixel(xx, yy, new HSVA(h, s, v, a));
                 }
             }
         }
@@ -114,48 +118,41 @@
         }
 
         /**
-         * Calculate the distance between old pixel and new pixel.
-         * The distance is calculated for both color difference and 
-         * physical distance (evaluated as minimum 1D Manhattan). The old
-         * and new pixels should be neighbors, which means once new pixel
-         * is transformed to old pixel space, their 1D Manhattan distance
-         * should be less than new pixel size.
+         * Calculate the difference between old pixel and new pixel.
+         * The difference is calculated for both color difference and 
+         * distance difference (evaluated as minimum 1D Manhattan). The
+         * old and new pixels should be neighbors, which means once new
+         * pixel is transformed to an equivalent old pixel, their 1D
+         * Manhattan distance should be less than new pixel size.
          * @param {number} x old pixel x index 
          * @param {number} y old pixel y index
          * @param {number} xx new pixel x index
          * @param {number} yy new pixel y index
-         * @param {number} size size of the new pixel
-         * @param {number} mix mixing ratio of color and physical distance
-         *     the ratio should between 0 to 1, and value is proportional
-         *     to the color distance (mix), and complementary proportional
-         *     to physical distance (1 - mix)
+         * @returns pixel difference which is within [0, 1]
          */
-        pixelDistance(x, y, xx, yy, size, mix) {
+        pixelDifference(x, y, xx, yy) {
+            // Cache local paramaters.
+            let pixelSize = this.options.pixelSize;
+            let colorDistRatio = this.options.colorDistRatio;
             // Bound pixel positions.
             x = Math.max(0, Math.min(x, this.oldPixels.width - 1));
             y = Math.max(0, Math.min(y, this.oldPixels.height - 1));
             xx = Math.max(0, Math.min(xx, this.newPixels.width - 1));
             yy = Math.max(0, Math.min(yy, this.newPixels.height - 1));
-            // Calculate color distance.
+            // Calculate color difference.
             let oldPixel = this.oldPixels.getPixel(x, y);
             let newPixel = this.newPixels.getPixel(xx, yy);
-            let cd = HSVA.difference(op, np);
+            let colorDiff = HSVA.difference(oldPixel, newPixel);
             // New pixel is transformed to old pixel equivalent.
-            let x2t = x2 * size + (size - 1) / 2;
-            let y2t = y2 * size + (size - 1) / 2;
-            // Calculate physical distance.
-            let dx = Math.abs(x1 - x2t);
-            let dy = Math.abs(y1 - y2t);
-            let dxy = Math.max(dx, dy);
-            // Make sure distance is less than size.
-            if (dxy > size * 1.5) {
-                throw new Error('old (' + x1 + ', ' + y1
-                    + ') and new (' + x2 + ', ' + y2
-                    + ') pixels are not neighbors');
-            }
-            let pd = dxy / size;
-            // Return distance with mix factor.
-            return mix * cd + (1 - mix) * pd;
+            let xxt = xx * pixelSize + (pixelSize - 1) / 2;
+            let yyt = yy * pixelSize + (pixelSize - 1) / 2;
+            // Calculate distance difference.
+            let dx = Math.abs(x - xxt);
+            let dy = Math.abs(y - yyt);
+            let distDiff = Math.max(dx, dy) / pixelSize;
+            // Return weighted result.
+            return colorDistRatio * colorDiff
+                + (1 - colorDistRatio) * distDiff;
         }
 
     }

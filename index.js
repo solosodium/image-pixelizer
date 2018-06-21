@@ -9,7 +9,11 @@ const Pixelizer = require('./src/pixelizer');
 
 // TODO: change this Pixelizer options.
 const options = new Pixelizer.Options()
-    .setPixelSize(30);
+    .setPixelSize(30)
+    .setBlurSize(0.5)
+    .setClusterThreshold(0.01)
+    .setVoidThreshold(0.1)
+    .setMaxIteration(0);
 
 // Process all images without 'pixel' in the name.
 const folder = 'images/';
@@ -25,7 +29,9 @@ fs.readdir(folder, function(err, files) {
             let output = folder + name + '.' + keyword + ext;
             // Actual pixelizing.
             Pixelizer.read(input).then((image) => {
-                return Pixelizer.process(image)
+                return Pixelizer.process(image, options);
+            }).then((image) => {
+                Pixelizer.saveImage(image, output);
             });
         }
     }

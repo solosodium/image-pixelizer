@@ -32,21 +32,21 @@
          * @param {Jimp} image input image to be pixelized
          * @param {Options} options pixeliation options
          */
-        process(image, options) {
+        static process(image, options) {
             // Step 1: resize input image.
-            let resizedImage = resizeImage(image, options);
+            let resizedImage = this.resizeImage(image, options);
             // Step 2: convert resized image to pixels.
-            let oldPixels = createPixels(resizedImage, 1);
+            let oldPixels = this.createPixels(resizedImage, 1);
             // Step 3: blur resized image.
             resizedImage.blur(options.pixelSize * options.blurSize);
             // Step 4: create pixels with new pixel size.
             let newPixels = 
                 this.createPixels(resizedImage, options.pixelSize);
             // Step 5: clustering pixels.
-
-
-            return new Promise((resolve, reject) => {
-
+            let cluster = new Cluster(oldPixels, newPixels, options);
+            cluster.cluster();
+            return new Promise((resolve) => {
+                resolve(cluster.getResult().toImage());
             });
         }
 
@@ -62,8 +62,8 @@
             let size = options.pixelSize;
             let width = image.bitmap.width;
             let height = image.bitmap.height;
-            let resizeAlign = self.options.resizeAlign;
-            let resizeFilter = self.options.resizeFilter;
+            let resizeAlign = options.resizeAlign;
+            let resizeFilter = options.resizeFilter;
             // New width and height should be quantized by new pixel size.
             let fixedWidth = Math.floor(width / size) * size;
             let fixedHeight = Math.floor(height / size) * size;
@@ -77,7 +77,7 @@
          * @param {number} size 
          * @return {Pixels}
          */
-        createPixels(image, size) {
+        static createPixels(image, size) {
             let width = image.bitmap.width;
             let height = image.bitmap.height;
             let w = Math.floor(width / size);
@@ -85,39 +85,14 @@
             return new Pixels(w, h, size, image);
         }
 
-
-
-
-        pixelizeImage(self, image) {
-            // Resize image with new pixel size.
-            image = self.resizeImage(self, image);
-            // Create a pixels representation of image.
-            var oldPixels = self.createPixels(self, image, 1);
-            // Blur image by new pixel size first.
-            image.blur(self.options.pixelSize / 2);
-            // Create a pixel representation of image with new pixel size.
-            var newPixels = self.createPixels(self, image, self.options.pixelSize);
-            // Create cluster.
-            var cluster = self.createCluster(self, oldPixels, newPixels);
-            cluster.cluster();
-            // Save new pixels as output image.
-            self.saveImage(self, newPixels.toImage());
-        }
-
-        
-
-        
-
-        createCluster(self, oldPixels, newPixels) {
-            return new Cluster(oldPixels, newPixels);
-        }
-
-        saveImage(self, image) {
-            return image.write(self.output, (error, image) => {
-                if (error) {
-                    throw error;
-                }
-            });
+        /**
+         * Save image to file.
+         * @param {Jimp} image image to output 
+         * @param {string} output complete file path of output image
+         */
+        static saveImage(image, output) {
+            Log.info("Saving output image file to: " + output);
+            return image.write(output);
         }
     }
 

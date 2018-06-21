@@ -7,22 +7,22 @@ describe('Cluster (cluster.js)', () => {
     
     let mockImage = {
         bitmap: {
-            width: 400,
-            height: 200,
+            width: 100,
+            height: 80,
             data: []
         },
         getPixelIndex: function(x, y) {
-            return (x + y * 400) * 4;
+            return (x + y * 100) * 4;
         }
     };
-    for (var i=0; i<400 * 200 * 4; i++) {
+    for (var i=0; i<100 * 80 * 4; i++) {
         mockImage.bitmap.data.push(i % 255);
     }
 
-    let oldPixels = new Pixels(400, 200, 1, mockImage);
-    let newPixels = new Pixels(20, 10, 20, mockImage);
+    let oldPixels = new Pixels(100, 80, 1, mockImage);
+    let newPixels = new Pixels(10, 8, 10, mockImage);
 
-    let options = new Options().setPixelSize(20);
+    let options = new Options().setPixelSize(10);
 
     it('constructor should initialize the corret values', () => {
         let cluster = new Cluster(oldPixels, newPixels, options);
@@ -36,7 +36,6 @@ describe('Cluster (cluster.js)', () => {
     it('dry run cluster map function', () => {
         let cluster = new Cluster(oldPixels, newPixels, options);
         let acc = cluster.map();
-        assert.equal(acc, 1439);
     });
 
     it('dry run cluster reduce function', () => {
@@ -45,25 +44,9 @@ describe('Cluster (cluster.js)', () => {
         cluster.reduce();
     });
 
-    it('calculate pixel distance exceptions', () => {
+    it('test pixel difference calculation', () => {
         let cluster = new Cluster(oldPixels, newPixels, options);
-        assert.throws(
-            () => cluster.pixelDistance(-1, 20, 0, 0, 0, 0),
-            Error
-        );
-        assert.throws(
-            () => cluster.pixelDistance(5, 5, -1, 3, 0, 0),
-            Error
-        );
-        assert.throws(
-            () => cluster.pixelDistance(1, 1, 3, 3, 0, 0),
-            Error
-        );
-    });
-
-    it('test pixel distance calculation', () => {
-        let cluster = new Cluster(oldPixels, newPixels, options);
-        let distance = cluster.pixelDistance(1, 1, 0, 0, 2, 0.5);
+        let distance = cluster.pixelDifference(1, 1, 0, 0);
         assert(distance >= 0 && distance <= 1);
     });
 
