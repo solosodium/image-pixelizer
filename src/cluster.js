@@ -90,21 +90,14 @@
                     let list = this.labels.getList(xx, yy);
                     // Aggregate pixels.
                     let h = 0, s = 0, v = 0, a = 0;
-                    // Check if this new pixel is a void.
-                    if (list.length / this.options.pixelSize 
-                        / this.options.pixelSize 
-                        > this.options.voidThreshold) {
-                        for (let i=0; i<list.length; i++) {
-                            let pos = list[i];
-                            let pixel 
-                                = this.oldPixels.getPixel(pos.x, pos.y);
-                            h += pixel.h / list.length;
-                            s += pixel.s / list.length;
-                            v += pixel.v / list.length;
-                            a += pixel.a / list.length;
-                        }
-                    } else {
-                        console.log("VOID");
+                    for (let i=0; i<list.length; i++) {
+                        let pos = list[i];
+                        let pixel 
+                            = this.oldPixels.getPixel(pos.x, pos.y);
+                        h += pixel.h / list.length;
+                        s += pixel.s / list.length;
+                        v += pixel.v / list.length;
+                        a += pixel.a / list.length;
                     }
                     // Set new pixel value.
                     this.newPixels.setPixel(xx, yy, new HSVA(h, s, v, a));
@@ -112,7 +105,10 @@
             }
         }
 
-        /** Result is clusted new pixels. */
+        /**
+         * Get clustered new pixels.
+         * @returns {Pixels} new pixels
+         */
         getResult() {
             return this.newPixels;
         }

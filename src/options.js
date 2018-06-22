@@ -14,7 +14,6 @@
             this.colorDistRatio = 0.8;
             this.maxIteration = 10;
             this.clusterThreshold = 0.01;
-            this.voidThreshold = 0.1;
             // Post-processing parameters.
             this.jpgQuality = 90;
             this.pngFilter = Jimp.PNG_FILTER_AUTO;
@@ -94,20 +93,6 @@
          */
         setClusterThreshold(threshold) {
             this.clusterThreshold = Math.max(0, Math.min(threshold, 1));
-            return this;
-        }
-
-        /**
-         * Set the threshold for pixel void detection.
-         * @param {number} threshold during each clustering iteration, if
-         *     the number of old pixels clustered to a specific new pixel
-         *     divided by the number of pixels represented in a new pixel
-         *     (size * size) is smaller than this threshold, this specific
-         *     new pixel is classified as 'void' pixel, and special
-         *     processing will be performed to get this new pixel value
-         */
-        setVoidThreshold(threshold) {
-            this.voidThreshold = Math.max(0, Math.min(threshold, 1));
             return this;
         }
 

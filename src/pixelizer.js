@@ -38,7 +38,10 @@
             // Step 2: convert resized image to pixels.
             let oldPixels = this.createPixels(resizedImage, 1);
             // Step 3: blur resized image.
-            resizedImage.blur(options.pixelSize * options.blurSize);
+            let blurSize = options.pixelSize * options.blurSize;
+            if (blurSize > 0) {
+                resizedImage.blur(blurSize);
+            }
             // Step 4: create pixels with new pixel size.
             let newPixels = 
                 this.createPixels(resizedImage, options.pixelSize);

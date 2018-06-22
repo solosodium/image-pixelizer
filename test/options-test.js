@@ -14,7 +14,6 @@ describe('Options (options.js)', () => {
         assert.equal(options.colorDistRatio, 0.8);
         assert.equal(options.maxIteration, 10);
         assert.equal(options.clusterThreshold, 0.01);
-        assert.equal(options.voidThreshold, 0.1);
         assert.equal(options.jpgQuality, 90);
         assert.equal(options.pngFilter, Jimp.PNG_FILTER_AUTO);
     });
@@ -72,15 +71,6 @@ describe('Options (options.js)', () => {
         assert.equal(options.clusterThreshold, 0);
         options.setClusterThreshold(2);
         assert.equal(options.clusterThreshold, 1);
-    });
-
-    it('test set void threshold', () => {
-        options.setVoidThreshold(0.1);
-        assert.equal(options.voidThreshold, 0.1);
-        options.setVoidThreshold(-1);
-        assert.equal(options.voidThreshold, 0);
-        options.setVoidThreshold(2);
-        assert.equal(options.voidThreshold, 1);
     });
 
     it('test set JPEG image quality', () => {
