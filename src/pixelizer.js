@@ -1,31 +1,31 @@
 (function() {
 
-    const Jimp = require('jimp');
-    const Log = require('./log');
-    const Pixels = require('./pixels');
-    const Options = require('./options');
-    const Cluster =require('./cluster');
+  const Jimp = require('jimp');
+  const Log = require('./log');
+  const Pixels = require('./pixels');
+  const Options = require('./options');
+  const Cluster =require('./cluster');
+
+  /**
+   * Pixelizer main class.
+   * Responsible for: loading input image file, pixelizing input file,
+   * and output to image files.
+   */
+  class Pixelizer {
+
+    /** Default constructor. */
+    constructor() {
+      // Do nothing.
+    }
 
     /**
-     * Pixelizer main class.
-     * Responsible for: loading input image file, pixelizing input file,
-     * and output to image files.
+     * Read an input image file.
+     * @param {string} input file path to input image file
      */
-    class Pixelizer {
-
-        /** Default constructor. */
-        constructor() {
-            // Do nothing.
-        }
-
-        /**
-         * Read an input image file.
-         * @param {string} input file path to input image file 
-         */
-        static read(input) {
-            Log.info("Reading input image file from: " + input);
-            return Jimp.read(input);
-        }
+    static read(input) {
+      Log.info("Reading input image file from: " + input);
+      return Jimp.read(input);
+    }
 
         /**
          * Pixelize image with options.
@@ -43,7 +43,7 @@
                 resizedImage.blur(blurSize);
             }
             // Step 4: create pixels with new pixel size.
-            let newPixels = 
+            let newPixels =
                 this.createPixels(resizedImage, options.pixelSize);
             // Step 5: clustering pixels.
             let cluster = new Cluster(oldPixels, newPixels, options);
@@ -54,9 +54,9 @@
         }
 
         /**
-         * Resize input image width and height to be multiple of new pixel 
+         * Resize input image width and height to be multiple of new pixel
          * size, so there will be no artifact lines after pixelization.
-         * @param {Jimp} image 
+         * @param {Jimp} image
          * @param {Options} options
          * @returns {Jimp}
          */
@@ -76,8 +76,8 @@
 
         /**
          * Convert image to pixels controlled by pixel size.
-         * @param {Jimp} image 
-         * @param {number} size 
+         * @param {Jimp} image
+         * @param {number} size
          * @return {Pixels}
          */
         static createPixels(image, size) {
@@ -90,7 +90,7 @@
 
         /**
          * Save image to file.
-         * @param {Jimp} image image to output 
+         * @param {Jimp} image image to output
          * @param {string} output complete file path of output image
          */
         static saveImage(image, output) {

@@ -23,7 +23,7 @@
 
         /**
          * Set resize align.
-         * @param {*} align e.g. Jimp.HORIZONTAL_ALIGN_*, or 
+         * @param {*} align e.g. Jimp.HORIZONTAL_ALIGN_*, or
          *     Jimp.VERTICAL_ALIGN_*, options can be joined by |
          */
         setResizeAlign(align) {
@@ -66,7 +66,7 @@
          * @param {number} ratio when calculating the cost for an old
          *     pixel to be clustered to a specific new pixel, the cost is
          *     evaluated by both color and distance cost, this ratio
-         *     controls the mixing of the two costs (0 means all distance 
+         *     controls the mixing of the two costs (0 means all distance
          *     contribution, 1 means all color contribution)
          */
         setColorDistRatio(ratio) {
@@ -99,7 +99,7 @@
         /**
          * Set JPEG iamge quality.
          * @param {number} quality a number from 0 to 100, higher the
-         *     better quality 
+         *     better quality
          */
         setJpgQuality(quality) {
             this.jpgQuality = Math.max(0, Math.min(quality, 100));

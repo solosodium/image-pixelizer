@@ -1,36 +1,42 @@
 (function() {
 
-    /**
-     * Internal Log utility class.
-     */
-    class Log {
+  /**
+   * Log class configuration.
+   */
+  let config = {
+    isVerbose: true,    // info only writes if verbose is true
+  };
 
-        /** Default constructor. */
-        constructor() {
-            // Flag to enable verbose logging.
-            this.isVerbose = true;
-        }
+  /**
+   * Internal Log utility class.
+   */
+  class Log {
 
-        /**
-         * Print info message.
-         * @param {string} msg info message to print 
-         */
-        info(msg) {
-            if (this.isVerbose) {
-                console.log('[Info] ' + msg);
-            }
-        }
-
-        /**
-         * Print error message.
-         * @param {string} msg error message to print  
-         */
-        error(msg) {
-            console.error('[Error] ' + msg);
-        }
-
+    /** Get configuration. */
+    static config() {
+      return config;
     }
 
-    module.exports = new Log();
+    /**
+     * Print info message.
+     * @param {string} msg info message to print
+     */
+    static info(msg) {
+      if (Log.config().isVerbose) {
+        console.log('[Info] ' + msg);
+      }
+    }
+
+    /**
+     * Print error message.
+     * @param {string} msg error message to print
+     */
+     static error(msg) {
+       console.error('[Error] ' + msg);
+     }
+   }
+
+   // Export singleton class.
+   module.exports = Log;
 
 })();

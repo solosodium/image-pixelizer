@@ -1,9 +1,9 @@
 (function() {
 
-    const HSVA = require('./color').HSVA;
+  const HSVA = require('./color').HSVA;
 
-    class Palette {
+  class Palette {
 
-    }
+  }
 
 })();
