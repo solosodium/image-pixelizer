@@ -143,7 +143,8 @@
       // Calculate distance difference.
       let dx = Math.abs(x - xxt);
       let dy = Math.abs(y - yyt);
-      let distDiff = Math.max(dx, dy) / pixelSize;
+      let dxy = dx * dx + dy * dy;
+      let distDiff = Math.sqrt(dxy / (pixelSize + 1) / (pixelSize + 1));
       // Return weighted result.
       return colorDistRatio * colorDiff + (1 - colorDistRatio) * distDiff;
     }
