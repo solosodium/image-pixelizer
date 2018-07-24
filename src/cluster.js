@@ -2,6 +2,7 @@
 
   const Pixels = require('./pixels');
   const HSVA = require('./color').HSVA;
+  const RGBA = require('./color').RGBA;
   const Options = require('./options');
   const Labels = require('./labels');
   const Log = require('./log');
@@ -144,7 +145,8 @@
       let dx = Math.abs(x - xxt);
       let dy = Math.abs(y - yyt);
       let dxy = dx * dx + dy * dy;
-      let distDiff = Math.sqrt(dxy / (pixelSize + 1) / (pixelSize + 1));
+      let distDiff = Math.max(dx, dy) / (pixelSize + 1);
+      //let distDiff = Math.sqrt(dxy / (pixelSize + 1) / (pixelSize + 1));
       // Return weighted result.
       return colorDistRatio * colorDiff + (1 - colorDistRatio) * distDiff;
     }
