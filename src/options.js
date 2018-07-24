@@ -11,7 +11,7 @@
             this.blurSize = 0.5;
             // Processing parameters.
             this.pixelSize = 1;
-            this.colorDistRatio = 0.8;
+            this.colorDistRatio = 0.75;
             this.maxIteration = 10;
             this.clusterThreshold = 0.01;
             // Post-processing parameters.
