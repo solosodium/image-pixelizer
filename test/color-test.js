@@ -78,4 +78,22 @@ describe('Color (color.js)', () => {
 
   });
 
+  describe('Ultimate RGBA to HSVA and back', () => {
+
+    it('test most RGBA to HSVA conversions', () => {
+      let step = 20;
+      for (let r=0; r<256; r+=step) {
+        for (let g=0; g<256; g+=step) {
+          for (let b=0; b<256; b+=step) {
+            for (let a=0; a<256; a+=step) {
+              let rgba = new Color.RGBA(r, g, b, a);
+              let diff = Color.RGBA.difference(rgba, rgba.toHSVA().toRGBA());
+              assert(Math.abs(diff) < 0.00001);
+            }
+          }
+        }
+      }
+    });
+  });
+
 });

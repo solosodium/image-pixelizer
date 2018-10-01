@@ -1,5 +1,5 @@
 /**
- * This is an example of how to use pixelizer to convret
+ * This is an example of how to use pixelizer to convert
  * images to pixel art.
  */
 
@@ -11,8 +11,8 @@ const Pixelizer = require('./src/pixelizer');
 const options = new Pixelizer.Options()
   .setPixelSize(30)
   .setBlurSize(0)
-  .setClusterThreshold(0.01)
-  .setMaxIteration(10);
+  .setClusterThreshold(0.05)
+  .setMaxIteration(100);
 
 // Process all images without keyword 'pixel' in the name.
 const folder = 'images/';
@@ -34,5 +34,5 @@ fs.readdir(folder, function(err, files) {
       });
     }
   }
-  
+
 });

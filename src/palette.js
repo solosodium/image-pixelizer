@@ -4,6 +4,12 @@
 
   class Palette {
 
+    constructor(colors) {
+        this.pixels = pixels;
+        this.labels = labels;
+    }
   }
+
+  module.export = Palette;
 
 })();

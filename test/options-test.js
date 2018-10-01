@@ -11,7 +11,7 @@ describe('Options (options.js)', () => {
     assert.equal(options.resizeFilter, Jimp.RESIZE_BEZIER);
     assert.equal(options.blurSize, 0.5);
     assert.equal(options.pixelSize, 1);
-    assert.equal(options.colorDistRatio, 0.8);
+    assert.equal(options.colorDistRatio, 0.75);
     assert.equal(options.maxIteration, 10);
     assert.equal(options.clusterThreshold, 0.01);
     assert.equal(options.jpgQuality, 90);

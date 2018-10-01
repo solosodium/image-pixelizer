@@ -45,6 +45,20 @@
       }
       return new HSVA(H, S, V, this.a / 255);
     }
+
+    /**
+     * Compare two color difference.
+     * @param {RGBA} c1
+     * @param {RGBA} c2
+     * @returns {number} difference is a scaled value less than 1
+     */
+    static difference(c1, c2) {
+      let dr = Math.abs(c1.r - c2.r);
+      let dg = Math.abs(c1.g - c2.g);
+      let db = Math.abs(c1.b - c2.b);
+      let da = Math.abs(c1.a - c2.a);
+      return (dr + dg + db + da) / 4;
+    }
   }
 
   /** HSV color with alpha channel. */
