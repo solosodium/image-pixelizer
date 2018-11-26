@@ -1,6 +1,6 @@
 const assert = require('assert');
 const Pixels = require('../src/pixels');
-const HSVA = require('../src/color').HSVA;
+const RGBA = require('../src/color').RGBA;
 
 describe('Pixels (pixels.js)', () => {
 
@@ -50,9 +50,9 @@ describe('Pixels (pixels.js)', () => {
 
   it('getPixel returns the correct color', () => {
     let pixels = new Pixels(5, 5, 2, mockImage);
-    assert(Math.abs(pixels.getPixel(2, 2).h - 210) < 1);
-    assert(Math.abs(pixels.getPixel(2, 2).s - 0.010) < 0.001);
-    assert(Math.abs(pixels.getPixel(2, 2).v - 0.784) < 0.001);
+    assert(Math.abs(pixels.getPixel(2, 2).r - 210) < 1);
+    assert(Math.abs(pixels.getPixel(2, 2).g - 0.010) < 0.001);
+    assert(Math.abs(pixels.getPixel(2, 2).b - 0.784) < 0.001);
     assert(Math.abs(pixels.getPixel(2, 2).a - 0.788) < 0.001);
   });
 
