@@ -1,7 +1,6 @@
 (function() {
 
   const Pixels = require('./pixels');
-  const HSVA = require('./color').HSVA;
   const RGBA = require('./color').RGBA;
   const Options = require('./options');
   const Labels = require('./labels');
@@ -89,17 +88,17 @@
           // Get the list of old pixels.
           let list = this.labels.getList(xx, yy);
           // Aggregate pixels.
-          let h = 0, s = 0, v = 0, a = 0;
+          let r = 0, g = 0, b = 0, a = 0;
           for (let i=0; i<list.length; i++) {
             let pos = list[i];
             let pixel = this.oldPixels.getPixel(pos.x, pos.y);
-            h += pixel.h / list.length;
-            s += pixel.s / list.length;
-            v += pixel.v / list.length;
+            r += pixel.r / list.length;
+            g += pixel.g / list.length;
+            b += pixel.b / list.length;
             a += pixel.a / list.length;
           }
           // Set new pixel value.
-          this.newPixels.setPixel(xx, yy, new HSVA(h, s, v, a));
+          this.newPixels.setPixel(xx, yy, new RGBA(r, g, b, a));
         }
       }
     }
@@ -137,7 +136,7 @@
       // Calculate color difference.
       let oldPixel = this.oldPixels.getPixel(x, y);
       let newPixel = this.newPixels.getPixel(xx, yy);
-      let colorDiff = HSVA.difference(oldPixel, newPixel);
+      let colorDiff = RGBA.difference(oldPixel, newPixel);
       // New pixel is transformed to old pixel equivalent.
       let xxt = xx * pixelSize + (pixelSize - 1) / 2;
       let yyt = yy * pixelSize + (pixelSize - 1) / 2;

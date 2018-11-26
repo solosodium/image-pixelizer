@@ -50,10 +50,10 @@ describe('Pixels (pixels.js)', () => {
 
   it('getPixel returns the correct color', () => {
     let pixels = new Pixels(5, 5, 2, mockImage);
-    assert(Math.abs(pixels.getPixel(2, 2).r - 210) < 1);
-    assert(Math.abs(pixels.getPixel(2, 2).g - 0.010) < 0.001);
-    assert(Math.abs(pixels.getPixel(2, 2).b - 0.784) < 0.001);
-    assert(Math.abs(pixels.getPixel(2, 2).a - 0.788) < 0.001);
+    assert(Math.abs(pixels.getPixel(2, 2).r - 198) < 1);
+    assert(Math.abs(pixels.getPixel(2, 2).g - 199) < 0.001);
+    assert(Math.abs(pixels.getPixel(2, 2).b - 200) < 0.001);
+    assert(Math.abs(pixels.getPixel(2, 2).a - 201) < 0.001);
   });
 
   it('setPixel throws exceptions invalid x and y positions', () => {
@@ -70,9 +70,9 @@ describe('Pixels (pixels.js)', () => {
 
   it('setPixel sets the correct color', () => {
     let pixels = new Pixels(5, 5, 2, mockImage);
-    let hsva = new HSVA(180, 0.5, 0.5, 0.5);
-    pixels.setPixel(2, 2, hsva);
-    assert.deepEqual(pixels.getPixel(2, 2), hsva);
+    let rgba = new RGBA(180, 170, 160, 150);
+    pixels.setPixel(2, 2, rgba);
+    assert.deepEqual(pixels.getPixel(2, 2), rgba);
   });
 
   it('toImage should return the correct image', () => {
