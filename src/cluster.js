@@ -38,7 +38,7 @@
 				this.reduce();
 				let percentage =
 					pixelChangeCount / this.oldPixels.width / this.oldPixels.height;
-				Log.info("Cluster iteration " + i + ", change % is " + percentage);
+				Log.info("Cluster iteration " + i + ", change % is " + (percentage * 100));
 				if (percentage < this.options.clusterThreshold) {
 					break;
 				}

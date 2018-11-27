@@ -1,9 +1,11 @@
 /**
- * This is an example of how to use pixelizer to convert
- * images to pixel art.
+ * Wrapper index.js to export Pixelizer class.
  */
 
-// Import modules.
+module.exports = require('./src/pixelizer');
+
+/** Local Run */
+
 const fs = require('fs');
 const Pixelizer = require('./src/pixelizer');
 
@@ -15,7 +17,7 @@ const options = new Pixelizer.Options()
 	.setMaxIteration(100);
 
 // Process all images without keyword 'pixel' in the name.
-const folder = 'images/';
+const folder = './example/images/';
 const extPattern = /\..+$/i;
 const keyword = 'pixel';
 fs.readdir(folder, function (err, files) {
@@ -34,5 +36,4 @@ fs.readdir(folder, function (err, files) {
 			});
 		}
 	}
-
 });

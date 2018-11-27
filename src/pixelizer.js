@@ -23,8 +23,12 @@
          * @param {string} input file path to input image file
          */
 		static read(input) {
-			Log.info("Reading input image file from: " + input);
-			return Jimp.read(input);
+			return new Promise((resolve) => {
+				Jimp.read(input).then((image) => {
+					Log.info("Reading input image file from: " + input);
+					resolve(image);
+				});
+			});
 		}
 
         /**
