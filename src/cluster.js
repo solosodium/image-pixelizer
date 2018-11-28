@@ -32,7 +32,6 @@
 
 		/** Map old pixels to new pixels, and update new pixels. */
 		cluster() {
-			Log.info("Clustering started.");
 			for (let i = 0; i < this.options.maxIteration; i++) {
 				let pixelChangeCount = this.map();
 				this.reduce();
@@ -43,7 +42,6 @@
 					break;
 				}
 			}
-			Log.info("Clustering done.");
 			return this;
 		}
 
@@ -88,17 +86,14 @@
 					// Get the list of old pixels.
 					let list = this.labels.getList(xx, yy);
 					// Aggregate pixels.
-					let r = 0, g = 0, b = 0, a = 0;
+					let aggregate = new RGBA(0, 0, 0, 0);
 					for (let i = 0; i < list.length; i++) {
 						let pos = list[i];
 						let pixel = this.oldPixels.getPixel(pos.x, pos.y);
-						r += pixel.r / list.length;
-						g += pixel.g / list.length;
-						b += pixel.b / list.length;
-						a += pixel.a / list.length;
+						aggregate = RGBA.add(aggregate, RGBA.scale(pixel, 1/ list.length));
 					}
 					// Set new pixel value.
-					this.newPixels.setPixel(xx, yy, new RGBA(r, g, b, a));
+					this.newPixels.setPixel(xx, yy, aggregate);
 				}
 			}
 		}

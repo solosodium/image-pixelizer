@@ -3,7 +3,9 @@
 	const Jimp = require('jimp');
 	const RGBA = require('./color').RGBA;
 
-	/** Custom pixels representation in RGBA color. */
+	/** 
+	 * Custom pixels representation in RGBA color.
+	 */
 	class Pixels {
 
 		/**

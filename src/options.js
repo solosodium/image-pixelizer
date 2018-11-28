@@ -2,6 +2,9 @@
 
 	const Jimp = require("jimp");
 
+	/**
+	 * Pixelizer configurable options.
+	 */
 	class Options {
 
 		constructor() {

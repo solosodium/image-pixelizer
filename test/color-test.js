@@ -35,6 +35,18 @@ describe('Color (color.js)', () => {
 			assert.deepEqual(RGBA.add(rgba1, rgba2), rgba1);
 			assert.deepEqual(RGBA.add(rgba1, rgba3), new RGBA(383, 383, 383, 383));
 		});
+
+		it('scale colors', () => {
+			let rgba = new RGBA(128, 128, 128, 128);
+			let value1 = 1;
+			let value2 = 0.5;
+			let result1 = RGBA.scale(rgba, value1);
+			assert.notEqual(result1, rgba);
+			assert.deepEqual(result1, new RGBA(128, 128, 128, 128));
+			let result2 = RGBA.scale(rgba, value2);
+			assert.notEqual(result2, rgba);
+			assert.deepEqual(result2, new RGBA(64, 64, 64, 64));
+		});
 	});
 
 });

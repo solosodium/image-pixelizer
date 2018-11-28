@@ -20,7 +20,7 @@
 		 * Compare two color difference.
 		 * @param {RGBA} c1
 		 * @param {RGBA} c2
-		 * @returns {number} difference is a scaled value less than 1
+		 * @returns {number} difference is a scaled value less than 1 but greater than 0
 		 */
 		static difference(c1, c2) {
 			let dr = Math.abs(c1.r - c2.r);
@@ -43,6 +43,44 @@
 			let a = c1.a + c2.a;
 			return new RGBA(r, g, b, a);
 		}
+
+		/**
+		 * Scale r, g, b, a uniformly by a value.
+		 * @param {RGBA} c
+		 * @param {number} val
+		 * @return {RGBA} scaled color c
+		 */
+		static scale(c, val) {
+			let r = c.r * val;
+			let g = c.g * val;
+			let b = c.b * val;
+			let a = c.a * val;
+			return new RGBA(r, g, b, a);
+		}
+	}
+
+	/**
+	 * A color palette utility class.
+	 * It can reduce a list of colors to a fixed number of colors.
+	 * This is done by comparing color difference.
+	 */
+	class Palette {
+
+		/**
+		 * Default constructor.
+		 * @param {Array{RGBA}} colors a list of RGBA colors
+		 */
+		constructor(colors) {
+			this.colors = colors;
+		}
+
+		/**
+		 * 
+		 * @param {number} number final number of colors
+		 */
+		reduce(number) {
+			
+		}
 	}
 
 	/** Clamp value between min and max values. */
@@ -50,9 +88,10 @@
 		return Math.min(Math.max(min, val), max);
 	}
 
-	/** Color module for color format classes. */
+	/** Color module for color related classes. */
 	module.exports = {
-		RGBA: RGBA
+		RGBA: RGBA,
+		Palette: Palette
 	};
 
 })();
