@@ -25,7 +25,7 @@
 		static read(input) {
 			return new Promise((resolve) => {
 				Jimp.read(input).then((image) => {
-					Log.info("Reading input image file from: " + input);
+					Log.info('Reading input image file from: ' + input);
 					resolve(image);
 				});
 			});
@@ -99,7 +99,7 @@
          * @param {string} output complete file path of output image
          */
 		static saveImage(image, output) {
-			Log.info("Saving output image file to: " + output);
+			Log.info('Saving output image file to: ' + output);
 			return image.write(output);
 		}
 	}

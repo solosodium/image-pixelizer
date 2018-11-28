@@ -72,20 +72,73 @@
 		 */
 		constructor(colors) {
 			this.colors = colors;
+			// Transform colors to weighted colors.
+			this.weightedColors = colors.map((color) => {
+				return { weight: 1, color: color };
+			});
 		}
 
 		/**
-		 * 
-		 * @param {number} number final number of colors
+		 * Reduce the number of colors.
+		 * @param {number} number final number of reduced colors
+		 * @return {*} a map from input colors to reduced colors
 		 */
 		reduce(number) {
-			
+			this.eliminate(number);
+			return this.map();
+		}
+
+		/** Helper to eliminate close colors until number of colors is reached. */
+		eliminate(number) {
+			// Weighted colors length has to be at least 2.
+			while (this.weightedColors.length > Math.max(1, number)) {
+				// Find the colors that are closest.
+				let minDiff = 1;
+				let closestColors = [];
+				for (let i=0; i<this.weightedColors.length; i++) {
+					for (let j=i+1; j<this.weightedColors.length; j++) {
+						let diff = RGBA.difference(
+							this.weightedColors[i].color,
+							this.weightedColors[j].color
+						);
+						if (diff <= minDiff) {
+							minDiff = diff;
+							closestColors = [
+								this.weightedColors[i],
+								this.weightedColors[j]
+							];
+						}
+					}
+				}
+				// Compute the reduced weighted color.
+				let reducedWeight = closestColors[0].weight + closestColors[1].weight;
+				let reducedColor = RGBA.add(
+					RGBA.scale(closestColors[0].color, closestColors[0].weight / reducedWeight),
+					RGBA.scale(closestColors[1].color, closestColors[1].weight / reducedWeight)
+				);
+				// Remove closest colors and add the reduced color.
+				this.weightedColors.splice(this.weightedColors.indexOf(closestColors[0]), 1);
+				this.weightedColors.splice(this.weightedColors.indexOf(closestColors[1]), 1);
+				this.weightedColors.push(
+					{ weight: reducedWeight, color: reducedColor }
+				);
+			}
+		}
+
+		/** Helper to map input colors to reduced colors. */
+		map() {
+
 		}
 	}
 
 	/** Clamp value between min and max values. */
 	function clamp(val, min, max) {
 		return Math.min(Math.max(min, val), max);
+	}
+
+	/** Convert a RGBA color to a string for key purpose. */
+	function keyfy(color) {
+		return JSON.stringify(color);
 	}
 
 	/** Color module for color related classes. */
