@@ -1,6 +1,6 @@
 const assert = require('assert');
 const Pixels = require('../src/pixels');
-const RGBA = require('../src/color').RGBA;
+const RGBA = require('../src/color');
 
 describe('Pixels (pixels.js)', () => {
 

@@ -5,6 +5,7 @@
 	const Pixels = require('./pixels');
 	const Options = require('./options');
 	const Cluster = require('./cluster');
+	const Palette = require('./palette');
 
     /**
      * Pixelizer main class.
@@ -52,8 +53,11 @@
 			// Step 5: clustering pixels.
 			let cluster = new Cluster(oldPixels, newPixels, options);
 			cluster.cluster();
+			// Step 6: reduce color palette.
+			let palette = new Palette(cluster.getResult());
+			let result = palette.reduce(32);
 			return new Promise((resolve) => {
-				resolve(cluster.getResult().toImage());
+				resolve(result.toImage());
 			});
 		}
 

@@ -1,7 +1,7 @@
 (function () {
 
 	const Pixels = require('./pixels');
-	const RGBA = require('./color').RGBA;
+	const RGBA = require('./color');
 	const Options = require('./options');
 	const Labels = require('./labels');
 	const Log = require('./log');

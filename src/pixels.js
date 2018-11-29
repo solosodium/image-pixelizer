@@ -1,7 +1,7 @@
 (function () {
 
 	const Jimp = require('jimp');
-	const RGBA = require('./color').RGBA;
+	const RGBA = require('./color');
 
 	/** 
 	 * Custom pixels representation in RGBA color.

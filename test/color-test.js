@@ -1,6 +1,5 @@
 const assert = require('assert');
-const RGBA = require('../src/color').RGBA;
-const Palette = require('../src/color').Palette;
+const RGBA = require('../src/color');
 
 describe('Color (color.js)', () => {
 
@@ -12,6 +11,14 @@ describe('Color (color.js)', () => {
 			assert.equal(rgba.g, 120);
 			assert.equal(rgba.b, 20);
 			assert.equal(rgba.a, 240);
+		});
+
+		it('test copy constructor', () => {
+			let rgba = new RGBA(128, 120, 20, 240);
+			let copy = rgba.copy();
+			assert.deepEqual(rgba, copy);
+			rgba.r = 0;
+			assert(Math.abs(rgba.r - copy.r) > 127.9);
 		});
 
 		it('constructor should bound r, g, b, a values', () => {
@@ -48,32 +55,6 @@ describe('Color (color.js)', () => {
 			assert.notEqual(result2, rgba);
 			assert.deepEqual(result2, new RGBA(64, 64, 64, 64));
 		});
-	});
-
-	describe('Palette', () => {
-
-		let colors = [
-			new RGBA(10, 10, 10, 10),
-			new RGBA(20, 20, 20, 20),
-			new RGBA(40, 40, 40, 40),
-			new RGBA(80, 80, 80, 80),
-			new RGBA(160, 160, 160, 160)
-		];
-
-		it('constructor should initialize correctly', () => {
-			let palette = new Palette(colors);
-			let weightedColors = colors.map((color) => {
-				return { weight: 1, color: color };
-			});
-			assert.deepEqual(palette.colors, colors);
-			assert.deepEqual(palette.weightedColors, weightedColors);
-		});
-
-		it('test reduce function', () => {
-			let palette = new Palette(colors);
-			console.log(palette.reduce(3));
-		});
-
 	});
 
 });
