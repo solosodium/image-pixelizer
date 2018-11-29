@@ -127,7 +127,20 @@
 
 		/** Helper to map input colors to reduced colors. */
 		map() {
-
+			let result = {};
+			for (let i=0; i<this.colors.length; i++) {
+				let mappedColor;
+				let minDiff = 1;
+				for (let j=0; j<this.weightedColors.length; j++) {
+					let diff = RGBA.difference(this.colors[i], this.weightedColors[j].color);
+					if (diff <= minDiff) {
+						minDiff = diff;
+						mappedColor = this.weightedColors[j].color;
+					}
+				}
+				
+			}
+			return result;
 		}
 	}
 
