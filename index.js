@@ -12,9 +12,10 @@ const Pixelizer = require('./src/pixelizer');
 // TODO: change this Pixelizer options.
 const options = new Pixelizer.Options()
 	.setPixelSize(20)
-	.setBlurSize(0)
+	.setBlurSize(0.5)
 	.setClusterThreshold(0.01)
-	.setMaxIteration(100);
+	.setMaxIteration(100)
+	.setNumberOfColors(128);
 
 // Process all images without keyword 'pixel' in the name.
 const folder = './example/images/';

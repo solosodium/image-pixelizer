@@ -14,6 +14,7 @@ describe('Options (options.js)', () => {
 		assert.equal(options.colorDistRatio, 0.75);
 		assert.equal(options.maxIteration, 10);
 		assert.equal(options.clusterThreshold, 0.01);
+		assert.equal(options.numberOfColors, 128);
 		assert.equal(options.jpgQuality, 90);
 		assert.equal(options.pngFilter, Jimp.PNG_FILTER_AUTO);
 	});
@@ -72,6 +73,15 @@ describe('Options (options.js)', () => {
 		options.setClusterThreshold(2);
 		assert.equal(options.clusterThreshold, 1);
 	});
+
+	it('test set number of colors', () => {
+		options.setNumberOfColors(10);
+		assert.equal(options.numberOfColors, 10);
+		options.setNumberOfColors(-10);
+		assert.equal(options.numberOfColors, 1);
+		options.setNumberOfColors(10.1);
+		assert.equal(options.numberOfColors, 10);
+	})
 
 	it('test set JPEG image quality', () => {
 		options.setJpgQuality(20);

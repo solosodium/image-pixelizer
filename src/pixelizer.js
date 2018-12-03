@@ -54,8 +54,8 @@
 			let cluster = new Cluster(oldPixels, newPixels, options);
 			cluster.cluster();
 			// Step 6: reduce color palette.
-			let palette = new Palette(cluster.getResult());
-			let result = palette.reduce(32);
+			let palette = new Palette(cluster.getResult(), options);
+			let result = palette.reduce(options.numberOfColors);
 			return new Promise((resolve) => {
 				resolve(result.toImage());
 			});

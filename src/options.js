@@ -17,6 +17,7 @@
 			this.colorDistRatio = 0.75;
 			this.maxIteration = 10;
 			this.clusterThreshold = 0.01;
+			this.numberOfColors = 128;
 			// Post-processing parameters.
 			this.jpgQuality = 90;
 			this.pngFilter = Jimp.PNG_FILTER_AUTO;
@@ -88,14 +89,25 @@
 		}
 
         /**
-         * Set the threshold for pixel clustering stop.
+         * Set the threshold for clustering stop.
          * @param {number} threshold during each clustering iteration, if
-         *     the number of old pixels that change their cluster label
-         *     divided by the total number of old pixels is smaller than
+         *     the number of candidates change their cluster assignment
+         *     divided by the total number of candidates is smaller than
          *     this threshold, hard stop on clustering iteration
          */
 		setClusterThreshold(threshold) {
 			this.clusterThreshold = Math.max(0, Math.min(threshold, 1));
+			return this;
+		}
+
+		/**
+		 * Set the number of colors in output image.
+		 * @param {number} number after clustering is done, another round
+		 * 	   of processing on colors will be carried out, this number
+		 *     can be any integer (non-positive means do not reduce)
+		 */
+		setNumberOfColors(number) {
+			this.numberOfColors = Math.max(1, parseInt(number));
 			return this;
 		}
 
