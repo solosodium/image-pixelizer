@@ -41,7 +41,15 @@ describe('Color (color.js)', () => {
 			let rgba2 = new RGBA(0, 0, 0, 0);
 			let rgba3 = new RGBA(255, 255, 255, 255);
 			assert.deepEqual(RGBA.add(rgba1, rgba2), rgba1);
-			assert.deepEqual(RGBA.add(rgba1, rgba3), new RGBA(383, 383, 383, 383));
+			assert.deepEqual(RGBA.add(rgba1, rgba3), rgba3);
+		});
+
+		it('test subtract colors function', () => {
+			let rgba1 = new RGBA(128, 128, 128, 128);
+			let rgba2 = new RGBA(0, 0, 0, 0);
+			let rgba3 = new RGBA(255, 255, 255, 255);
+			assert.deepEqual(RGBA.subtract(rgba1, rgba2), rgba1);
+			assert.deepEqual(RGBA.subtract(rgba1, rgba3), rgba2);
 		});
 
 		it('test scale colors function', () => {
@@ -54,6 +62,15 @@ describe('Color (color.js)', () => {
 			let result2 = RGBA.scale(rgba, value2);
 			assert.notEqual(result2, rgba);
 			assert.deepEqual(result2, new RGBA(64, 64, 64, 64));
+		});
+
+		it('test zero color', () => {
+			assert.deepEqual(RGBA.zero(), new RGBA(0, 0, 0, 0));
+		});
+
+		it('test color vector length', () => {
+			let rgba = new RGBA(1, 1, 1, 1);
+			assert.equal(RGBA.length(rgba), 2);
 		});
 	});
 

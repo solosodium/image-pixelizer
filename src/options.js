@@ -107,7 +107,7 @@
 		 *     can be any integer (non-positive means do not reduce)
 		 */
 		setNumberOfColors(number) {
-			this.numberOfColors = Math.max(1, parseInt(number));
+			this.numberOfColors = parseInt(number);
 			return this;
 		}
 

@@ -78,7 +78,7 @@ describe('Options (options.js)', () => {
 		options.setNumberOfColors(10);
 		assert.equal(options.numberOfColors, 10);
 		options.setNumberOfColors(-10);
-		assert.equal(options.numberOfColors, 1);
+		assert.equal(options.numberOfColors, -10);
 		options.setNumberOfColors(10.1);
 		assert.equal(options.numberOfColors, 10);
 	})

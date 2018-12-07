@@ -53,6 +53,20 @@
 		}
 
 		/**
+		 * Subtract c2 from c1.
+		 * @param {RGBA} c1
+		 * @param {RGBA} c2
+		 * @returns {RGBA} c1 subtracted by c2
+		 */
+		static subtract(c1, c2) {
+			let r = c1.r - c2.r;
+			let g = c1.g - c2.g;
+			let b = c1.b - c2.b;
+			let a = c1.a - c2.a;
+			return new RGBA(r, g, b, a);
+		}
+
+		/**
 		 * Scale r, g, b, a uniformly by a value.
 		 * @param {RGBA} c
 		 * @param {number} val
@@ -64,6 +78,24 @@
 			let b = c.b * val;
 			let a = c.a * val;
 			return new RGBA(r, g, b, a);
+		}
+
+		/** Returns zero valued RGBA color. */
+		static zero() {
+			return new RGBA(0, 0, 0, 0);
+		}
+
+		/** 
+		 * Return the length of RGBA vector.  
+		 * @param {RGBA} c
+		 */
+		static length(c) {
+			return Math.sqrt(
+				c.r * c.r + 
+				c.g * c.g + 
+				c.b * c.b + 
+				c.a * c.a
+			);
 		}
 	}
 

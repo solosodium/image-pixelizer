@@ -21,6 +21,7 @@
 			this.pixels = pixels;
 			this.options = options;
 			this.colors = pixels.pixels;
+			this.groups = [];
 		}
 
 		/**
@@ -32,29 +33,17 @@
 			if (this.options.numberOfColors <= 0) {
 				return this.pixels;
 			}
-			// Initialize groups data structure.
-			this.groups = [];
-			this.groups.push({
-				mean: new RGBA(0, 0, 0, 0),
-				sd: 0,
-				oldList: [],
-				newList: []
-			});
 			// Loop to increase groups sizes to input number.
+			this.initGroups();
 			while (this.groups.length < this.options.numberOfColors) {
-				this.initGroups();
-				let iter = 0;
-				let change = this.assignGroups();
-				while (iter < 100000 && change > this.options.clusterThreshold) {
-					this.initGroups();
-					change = this.assignGroups();
-					iter++;
-					console.log("Iteration: " + iter + ", change is: " + change);
-				}
-				this.updateGroups();
 				this.splitGroups();
-				Log.info("Color number is " + this.groups.length);
-				
+				let iter = 0;
+				let change = 2;
+				while (iter < 100000 && change > this.options.clusterThreshold) {
+					change = this.assignGroups();
+					this.updateGroups();
+					iter++;
+				}
 			}
 			// Map pixels to groups and return pixels.
             this.map();
@@ -63,18 +52,21 @@
 
 		/** Initialize groups for next iteration. */
 		initGroups() {
-			for (let i=0; i<this.groups.length; i++) {
-				this.groups[i].oldList = this.groups[i].newList;
-				this.groups[i].newList = [];
-			}
+			this.groups.push({
+				mean: RGBA.zero(),
+				sd: RGBA.zero(),
+				oldList: [],
+				newList: []
+			});
 		}
 
 		/** Assign colors to groups. */
 		assignGroups() {
+			// Assign colors to groups.
 			let colorChanged = 0;
 			for (let i=0; i<this.colors.length; i++) {
 				let minDiff = 2;
-				let groupIndex = 0;
+				let groupIndex = -1;
 				for (let j=0; j<this.groups.length; j++) {
 					let diff = RGBA.difference(this.groups[j].mean, this.colors[i]);
 					if (diff < minDiff) {
@@ -82,52 +74,41 @@
 						groupIndex = j;
 					}
 				}
+				this.groups[groupIndex].newList.push(this.colors[i]);
 				if (this.groups[groupIndex].oldList.indexOf(this.colors[i]) < 0) {
 					colorChanged++;
 				}
-				this.groups[groupIndex].newList.push(this.colors[i]);
 			}
-
-			//console.log(colorChanged / this.colors.length);
-
+			// Swap old list with new list.
+			for (let i=0; i<this.groups.length; i++) {
+				this.groups[i].oldList = this.groups[i].newList;
+				this.groups[i].newList = [];
+			}
 			return colorChanged / this.colors.length;
 		}
 
 		/** Update groups parameters. */
 		updateGroups() {
 			for (let i=0; i<this.groups.length; i++) {
-				let aggregate = new RGBA(0, 0, 0, 0);
+				let aggregate = RGBA.zero();
 				let r2 = 0, g2 = 0, b2 = 0, a2 = 0;
-				let length = this.groups[i].newList.length;
+				let length = this.groups[i].oldList.length;
 				for (let j=0; j<length; j++) {
-					aggregate = RGBA.add(aggregate, 
-						RGBA.scale(
-							this.groups[i].newList[j], 
-							1 / length));
-					r2 += this.groups[i].newList[j].r 
-						* this.groups[i].newList[j].r 
-						/ length;
-					g2 += this.groups[i].newList[j].g 
-						* this.groups[i].newList[j].g 
-						/ length;
-					b2 += this.groups[i].newList[j].b 
-						* this.groups[i].newList[j].b 
-						/ length;
-					a2 += this.groups[i].newList[j].a 
-						* this.groups[i].newList[j].a 
-						/ length;
+					let color = this.groups[i].oldList[j];
+					aggregate = RGBA.add(aggregate, RGBA.scale(color, 1 / length));
+					r2 += color.r * color.r / length;
+					g2 += color.g * color.g / length;
+					b2 += color.b * color.b / length;
+					a2 += color.a * color.a / length;;
 				}
 				this.groups[i].mean = aggregate;
-				this.groups[i].sd = (
-					Math.sqrt(r2 - aggregate.r * aggregate.r) + 
-					Math.sqrt(g2 - aggregate.g * aggregate.g) + 
-					Math.sqrt(b2 - aggregate.b * aggregate.b) + 
+				this.groups[i].sd = new RGBA(
+					Math.sqrt(r2 - aggregate.r * aggregate.r),
+					Math.sqrt(g2 - aggregate.g * aggregate.g), 
+					Math.sqrt(b2 - aggregate.b * aggregate.b), 
 					Math.sqrt(a2 - aggregate.a * aggregate.a)
-				) / 4;
-
-				
+				);
 			}
-			//console.log(this.groups[0]);
 		}
 
 		/** Split the group with the highest sd into 2. */
@@ -136,8 +117,8 @@
 			let maxSd = -1;
 			let group = null;
 			for (let i=0; i<this.groups.length; i++) {
-				if (this.groups[i].sd > maxSd) {
-					maxSd = this.groups[i].sd;
+				if (RGBA.length(this.groups[i].sd) >= maxSd) {
+					maxSd = RGBA.length(this.groups[i].sd);
 					group = this.groups[i];
 				}
 			}
@@ -145,14 +126,14 @@
 			this.groups.splice(this.groups.indexOf(group), 1);
 			// Add two new groups.
 			this.groups.push({
-				mean: RGBA.scale(group.mean, 0.5),
-				sd: 0,
+				mean: RGBA.subtract(group.mean, group.sd),
+				sd: RGBA.zero(),
 				oldList: [],
 				newList: []
 			});
 			this.groups.push({
-				mean: RGBA.scale(group.mean, 1.5),
-				sd: 0,
+				mean: RGBA.add(group.mean, group.sd),
+				sd: RGBA.zero(),
 				oldList: [],
 				newList: []
 			});
