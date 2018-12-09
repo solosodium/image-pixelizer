@@ -103,10 +103,10 @@
 				}
 				this.groups[i].mean = aggregate;
 				this.groups[i].sd = new RGBA(
-					Math.sqrt(r2 - aggregate.r * aggregate.r),
-					Math.sqrt(g2 - aggregate.g * aggregate.g), 
-					Math.sqrt(b2 - aggregate.b * aggregate.b), 
-					Math.sqrt(a2 - aggregate.a * aggregate.a)
+					Math.sqrt(Math.max(0, r2 - aggregate.r * aggregate.r)),
+					Math.sqrt(Math.max(0, g2 - aggregate.g * aggregate.g)), 
+					Math.sqrt(Math.max(0, b2 - aggregate.b * aggregate.b)), 
+					Math.sqrt(Math.max(0, a2 - aggregate.a * aggregate.a))
 				);
 			}
 		}
@@ -125,6 +125,11 @@
 			// Remove group in groups array.
 			this.groups.splice(this.groups.indexOf(group), 1);
 			// Add two new groups.
+
+			if (group === null) {
+				console.error("Error spliting groups for", this.groups);
+			}
+
 			this.groups.push({
 				mean: RGBA.subtract(group.mean, group.sd),
 				sd: RGBA.zero(),
