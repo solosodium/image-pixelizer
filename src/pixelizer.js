@@ -20,15 +20,20 @@
 		}
 
         /**
-         * Read an input image file.
+         * Load an input image file.
          * @param {string} input file path to input image file
          */
-		static read(input) {
-			return new Promise((resolve) => {
-				Jimp.read(input).then((image) => {
-					Log.info('Reading input image file from: ' + input);
-					resolve(image);
-				});
+		static load(input) {
+			return new Promise((resolve, reject) => {
+				Jimp.read(input).then(
+					(image) => {
+						Log.info("Load image from: " + input);
+						resolve(image);
+					}, (err) => {
+						Log.info("Failed to load image from: " + input + ', error: ' + err);
+						reject(err);
+					}
+				);
 			});
 		}
 
@@ -38,27 +43,49 @@
          * @param {Options} options pixeliation options
          */
 		static process(image, options) {
-			// Step 1: resize input image.
-			let resizedImage = this.resizeImage(image, options);
-			// Step 2: convert resized image to pixels.
-			let oldPixels = this.createPixels(resizedImage, 1);
-			// Step 3: blur resized image.
-			let blurSize = options.pixelSize * options.blurSize;
-			if (blurSize > 0) {
-				resizedImage.blur(blurSize);
-			}
-			// Step 4: create pixels with new pixel size.
-			let newPixels =
-				this.createPixels(resizedImage, options.pixelSize);
-			// Step 5: clustering pixels.
-			let cluster = new Cluster(oldPixels, newPixels, options);
-			cluster.cluster();
-			// Step 6: reduce color palette.
-			let palette = new Palette(cluster.getResult(), options);
-			let result = palette.reduce();
-			return new Promise((resolve) => {
+			return new Promise((resolve, reject) => {
+				// Step 1: resize input image.
+				let resizedImage = this.resizeImage(image, options);
+				// Step 2: convert resized image to pixels.
+				let oldPixels = this.createPixels(resizedImage, 1);
+				// Step 3: blur resized image.
+				let blurSize = options.pixelSize * options.blurSize;
+				if (blurSize > 0) {
+					resizedImage.blur(blurSize);
+				}
+				// Step 4: create pixels with new pixel size.
+				let newPixels =
+					this.createPixels(resizedImage, options.pixelSize);
+				// Step 5: clustering pixels.
+				let cluster = new Cluster(oldPixels, newPixels, options);
+				cluster.cluster();
+				// Step 6: reduce color palette.
+				let palette = new Palette(cluster.getResult(), options);
+				let result = palette.reduce();
+				// Return.
 				resolve(result.toImage());
 			});
+		}
+
+        /**
+         * Save image to file.
+         * @param {Jimp} image image to output
+         * @param {string} output complete file path of output image
+         */
+		static save(image, output) {
+			return new Promise((resolve, reject) => {
+				image.write(output).then(
+					() => {
+						Log.info('Save image to: ' + output);
+						resolve();
+					}, (err) => {
+						Log.error('Failed to save image to: ' + output + ', error: ' + err);
+						reject(err);
+					}
+				);
+			});
+			
+			return image.write(output);
 		}
 
 
@@ -95,16 +122,6 @@
 			let w = Math.floor(width / size);
 			let h = Math.floor(height / size);
 			return new Pixels(w, h, size, image);
-		}
-
-        /**
-         * Save image to file.
-         * @param {Jimp} image image to output
-         * @param {string} output complete file path of output image
-         */
-		static saveImage(image, output) {
-			Log.info('Saving output image file to: ' + output);
-			return image.write(output);
 		}
 	}
 

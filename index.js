@@ -8,6 +8,7 @@ module.exports = require('./src/pixelizer');
 
 const fs = require('fs');
 const Pixelizer = require('./src/pixelizer');
+const Log = require('./src/log');
 
 // TODO: change this Pixelizer options.
 const options = new Pixelizer.Options()
@@ -30,10 +31,16 @@ fs.readdir(folder, function (err, files) {
 			let input = folder + file;
 			let output = folder + name + '.' + keyword + ext;
 			// Actual pixelizing.
-			Pixelizer.read(input).then((image) => {
+			Pixelizer.load(input).then((image) => {
 				return Pixelizer.process(image, options);
+			}, (err) => {
+				Log.error(err);
 			}).then((image) => {
-				Pixelizer.saveImage(image, output);
+				return Pixelizer.save(image, output);
+			}).then(() => {
+
+			}, (err) => {
+				Log.error(err);
 			});
 		}
 	}
