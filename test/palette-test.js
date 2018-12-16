@@ -78,7 +78,6 @@ describe('Palette', () => {
         for (let i=0; i<palette.groups.length; i++) {
             num += palette.groups[i].oldList.length;
         }
-        console.log(num);
     });
 
 });

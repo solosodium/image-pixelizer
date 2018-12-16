@@ -13,19 +13,20 @@ const Log = require('./src/log');
 // TODO: change this Pixelizer options.
 const options = new Pixelizer.Options()
 	.setPixelSize(20)
-	.setBlurSize(0.5)
-	.setClusterThreshold(0.01)
-	.setMaxIteration(100)
-	.setNumberOfColors(8);
+	.setBlurSize(0.2)
+	.setClusterThreshold(0.001)
+	.setMaxIteration(200)
+	.setNumberOfColors(16);
 
 // Process all images without keyword 'pixel' in the name.
 const folder = './example/images/';
-const extPattern = /\..+$/i;
+const namePattern = /^(?!\.)(.+)\.(?!\.)(.+)$/i;
+const extPattern = /\.(?!\.)(.+)$/i;
 const keyword = 'pixel';
 fs.readdir(folder, function (err, files) {
 	for (let i = 0; i < files.length; i++) {
 		let file = files[i];
-		if (!file.includes(keyword)) {
+		if (file.match(namePattern) && !file.includes(keyword)) {
 			let ext = file.match(extPattern)[0];
 			let name = file.substring(0, file.indexOf(ext));
 			let input = folder + file;
@@ -37,9 +38,7 @@ fs.readdir(folder, function (err, files) {
 				Log.error(err);
 			}).then((image) => {
 				return Pixelizer.save(image, output);
-			}).then(() => {
-
-			}, (err) => {
+			}).then(() => {}, (err) => {
 				Log.error(err);
 			});
 		}

@@ -30,7 +30,7 @@
 						Log.info("Load image from: " + input);
 						resolve(image);
 					}, (err) => {
-						Log.info("Failed to load image from: " + input + ', error: ' + err);
+						Log.error("Failed to load image from: " + input + ', error: ' + err);
 						reject(err);
 					}
 				);
@@ -73,19 +73,8 @@
          * @param {string} output complete file path of output image
          */
 		static save(image, output) {
-			return new Promise((resolve, reject) => {
-				image.write(output).then(
-					() => {
-						Log.info('Save image to: ' + output);
-						resolve();
-					}, (err) => {
-						Log.error('Failed to save image to: ' + output + ', error: ' + err);
-						reject(err);
-					}
-				);
-			});
-			
-			return image.write(output);
+			image.write(output);
+			Log.info('Save image to: ' + output);
 		}
 
 

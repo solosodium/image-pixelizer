@@ -125,11 +125,6 @@
 			// Remove group in groups array.
 			this.groups.splice(this.groups.indexOf(group), 1);
 			// Add two new groups.
-
-			if (group === null) {
-				console.error("Error spliting groups for", this.groups);
-			}
-
 			this.groups.push({
 				mean: RGBA.subtract(group.mean, group.sd),
 				sd: RGBA.zero(),
