@@ -1,6 +1,6 @@
 (function () {
 
-	const Jimp = require('jimp');
+	const Bitmap = require('./bitmap');
 	const RGBA = require('./color');
 
 	/** 
@@ -13,23 +13,23 @@
 		 * @param {number} width pixels width
 		 * @param {number} height pixels height
 		 * @param {number} size new pixel size
-		 * @param {Jimp} image an input Jimp image object
+		 * @param {Bitmap} bitmap a bitmap object
 		 */
-		constructor(width, height, size, image) {
+		constructor(width, height, size, bitmap) {
 			this.width = width;
 			this.height = height;
 			this.size = size;
 			// Check width, height, size and image dimensions.
-			if (width * size > image.bitmap.width) {
+			if (width * size > bitmap.width) {
 				throw new Error('invalid width combination, width(' + width + '), '
-					+ 'size(' + size + '), image width(' + image.bitmap.width + ')');
+					+ 'size(' + size + '), bitmap width(' + bitmap.width + ')');
 			}
-			if (height * size > image.bitmap.height) {
+			if (height * size > bitmap.height) {
 				throw new Error('invalid height combination, height(' + height + '), '
-					+ 'size(' + size + '), image height(' + image.bitmap.height + ')');
+					+ 'size(' + size + '), bitmap height(' + bitmap.height + ')');
 			}
 			// Initialize pixels. Each pixel is the average of all the pixels in
-			// size * size square in the input image.
+			// size * size square in the input bitmap.
 			this.pixels = [];
 			for (let x = 0; x < this.width; x++) {
 				for (let y = 0; y < this.height; y++) {
@@ -40,10 +40,10 @@
 							let xx = x * size + i;
 							let yy = y * size + j;
 							let idx = image.getPixelIndex(xx, yy);
-							r += image.bitmap.data[idx + 0] / size / size;
-							g += image.bitmap.data[idx + 1] / size / size;
-							b += image.bitmap.data[idx + 2] / size / size;
-							a += image.bitmap.data[idx + 3] / size / size;
+							r += bitmap.data[idx + 0] / size / size;
+							g += bitmap.data[idx + 1] / size / size;
+							b += bitmap.data[idx + 2] / size / size;
+							a += bitmap.data[idx + 3] / size / size;
 						}
 					}
 					this.pixels[y * width + x] = new RGBA(r, g, b, a);

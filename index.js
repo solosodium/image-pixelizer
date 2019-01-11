@@ -16,7 +16,7 @@ const options = new Pixelizer.Options()
 	.setBlurSize(0.2)
 	.setClusterThreshold(0.001)
 	.setMaxIteration(200)
-	.setNumberOfColors(16);
+	.setNumberOfColors(10);
 
 // Process all images without keyword 'pixel' in the name.
 const folder = './example/images/';

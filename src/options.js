@@ -8,50 +8,13 @@
 	class Options {
 
 		constructor() {
-			// Pre-processing parameters.
-			this.resizeAlign = Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE;
-			this.resizeFilter = Jimp.RESIZE_BEZIER;
-			this.blurSize = 0.5;
 			// Processing parameters.
 			this.pixelSize = 1;
 			this.colorDistRatio = 0.75;
 			this.maxIteration = 10;
 			this.clusterThreshold = 0.01;
 			this.numberOfColors = 128;
-			// Post-processing parameters.
-			this.jpgQuality = 90;
-			this.pngFilter = Jimp.PNG_FILTER_AUTO;
 			// Return.
-			return this;
-		}
-
-        /**
-         * Set resize align.
-         * @param {*} align e.g. Jimp.HORIZONTAL_ALIGN_*, or
-         *     Jimp.VERTICAL_ALIGN_*, options can be joined by |
-         */
-		setResizeAlign(align) {
-			this.resizeAlign = align;
-			return this;
-		}
-
-        /**
-         * Set resize filter.
-         * @param {*} filter e.g. Jimp.RESIZE_*
-         */
-		setResizeFilter(filter) {
-			this.resizeFilter = filter;
-			return this;
-		}
-
-        /**
-         * Set blur size.
-         * @param {number} size size of the blur radius before
-         *     pixelization, this is expressed as a fraction of the pixel
-         *     size, it has to be larger than 0, but not limit to 1
-         */
-		setBlurSize(size) {
-			this.blurSize = Math.max(0, size);
 			return this;
 		}
 
@@ -108,25 +71,6 @@
 		 */
 		setNumberOfColors(number) {
 			this.numberOfColors = parseInt(number);
-			return this;
-		}
-
-        /**
-         * Set JPEG iamge quality.
-         * @param {number} quality a number from 0 to 100, higher the
-         *     better quality
-         */
-		setJpgQuality(quality) {
-			this.jpgQuality = Math.max(0, Math.min(quality, 100));
-			return this;
-		}
-
-        /**
-         * Set PNG image filter.
-         * @param {*} filter e.g. Jimp.PNG_FILTER_*
-         */
-		setPngFilter(filter) {
-			this.pngFilter = filter;
 			return this;
 		}
 	}
