@@ -1,7 +1,5 @@
 (function() {
 
-    const Color = require('./color');
-
     /**
      * A light weight wrapper class encapsulating bitmap data.
      * Compatible with Jimp.bitmap (only width, height, data).
@@ -35,23 +33,6 @@
             y = clamp(y, 0, this.height - 1);
             return (this.width * y + x) * 4;
         }
-
-        /**
-         * Get pixel in color at position (x, y).
-         * @param {number} x 
-         * @param {number} y 
-         */
-        getPixel(x, y) {
-            x = clamp(x, 0, this.width - 1);
-            y = clamp(y, 0, this.height - 1);
-            let idx = this.getPixelIndex(x, y);
-            return new Color(
-                this.data[idx + 0],
-                this.data[idx + 1],
-                this.data[idx + 2],
-                this.data[idx + 3]
-            );
-        }
     }
 
     /** Clamp value between min and max values. */
@@ -60,5 +41,5 @@
 	}
 
     module.exports = Bitmap;
-
+    
 })();

@@ -1,6 +1,5 @@
 (function () {
 
-	const Jimp = require('jimp');
 	const Log = require('./log');
 	const Pixels = require('./pixels');
 	const Options = require('./options');

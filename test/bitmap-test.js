@@ -28,10 +28,11 @@ describe('Bitmap (bitmap.js)', () => {
 
     it('get pixel index function', () => {
         let bitmap = new Bitmap(3, 2, data);
-        assert.equal(bitmap.getPixelIndex(0, 1), 12);
+        assert.equal(bitmap.getPixelIndex(1, 1), 16);
         assert.equal(bitmap.getPixelIndex(-1, 0), 0);
-        assert.equal(bitmap.getPixelIndex(0, 4), 12);
         assert.equal(bitmap.getPixelIndex(0, -1), 0);
+        assert.equal(bitmap.getPixelIndex(0, 3), 12);
+        assert.equal(bitmap.getPixelIndex(4, 0), 8);
         assert.equal(bitmap.getPixelIndex(4, 3), 20);
     });
 

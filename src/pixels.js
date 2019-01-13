@@ -9,7 +9,7 @@
 	class Pixels {
 
 		/**
-		 * Create RGBA pixels representation of an input image.
+		 * Create RGBA pixels representation of an input bitmap.
 		 * @param {number} width pixels width
 		 * @param {number} height pixels height
 		 * @param {number} size new pixel size
@@ -19,7 +19,7 @@
 			this.width = width;
 			this.height = height;
 			this.size = size;
-			// Check width, height, size and image dimensions.
+			// Check width, height, size and bitmap dimensions.
 			if (width * size > bitmap.width) {
 				throw new Error('invalid width combination, width(' + width + '), '
 					+ 'size(' + size + '), bitmap width(' + bitmap.width + ')');
@@ -39,7 +39,7 @@
 						for (let j = 0; j < size; j++) {
 							let xx = x * size + i;
 							let yy = y * size + j;
-							let idx = image.getPixelIndex(xx, yy);
+							let idx = bitmap.getPixelIndex(xx, yy);
 							r += bitmap.data[idx + 0] / size / size;
 							g += bitmap.data[idx + 1] / size / size;
 							b += bitmap.data[idx + 2] / size / size;
@@ -84,22 +84,21 @@
 		}
 
 		/**
-		 * Convert pixels to an image object.
-		 * @returns {Jimp} a Jimp image
+		 * Convert pixels to a bitmap object.
+		 * @returns {Bitmap} a bitmap object
 		 */
-		toImage() {
-			var image = new Jimp(this.width, this.height);
+		toBitmap() {
+			let data = [];
 			for (let x = 0; x < this.width; x++) {
 				for (let y = 0; y < this.height; y++) {
-					let idx = image.getPixelIndex(x, y);
 					let rgba = this.getPixel(x, y);
-					image.bitmap.data[idx + 0] = rgba.r;
-					image.bitmap.data[idx + 1] = rgba.g;
-					image.bitmap.data[idx + 2] = rgba.b;
-					image.bitmap.data[idx + 3] = rgba.a;
+					data.push(rgba.r);
+					data.push(rgba.g);
+					data.push(rgba.b);
+					data.push(rgba.a);
 				}
 			}
-			return image;
+			return new Bitmap(this.width, this.height, data);
 		}
 
 	}

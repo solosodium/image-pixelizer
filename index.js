@@ -13,7 +13,6 @@ const Log = require('./src/log');
 // TODO: change this Pixelizer options.
 const options = new Pixelizer.Options()
 	.setPixelSize(20)
-	.setBlurSize(0.2)
 	.setClusterThreshold(0.001)
 	.setMaxIteration(200)
 	.setNumberOfColors(10);
