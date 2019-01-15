@@ -33,6 +33,7 @@ fs.readdir(folder, function (err, files) {
 			let output = folder + name + '.' + keyword + ext;
 			// Actual pixelizing.
 			Jimp.read(input).then(image => {
+				Log.info('Pixelizing ' + input);
 				let bitmap = new Pixelizer.Bitmap(
 					image.bitmap.width,
 					image.bitmap.height,
@@ -41,6 +42,7 @@ fs.readdir(folder, function (err, files) {
 				let resultBitmap = pixelizer.pixelize();
 				let resultImage = new Jimp(resultBitmap.width, resultBitmap.height);
 				resultImage.bitmap.data = resultBitmap.data;
+				Log.info('Write to ' + output);
 				resultImage.write(output);
 			}).catch(error => {
 				console.error(error);
