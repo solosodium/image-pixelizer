@@ -89,8 +89,8 @@
 		 */
 		toBitmap() {
 			let data = [];
-			for (let x = 0; x < this.width; x++) {
-				for (let y = 0; y < this.height; y++) {
+			for (let y = 0; y < this.height; y++) {
+				for (let x = 0; x < this.width; x++) {
 					let rgba = this.getPixel(x, y);
 					data.push(rgba.r);
 					data.push(rgba.g);

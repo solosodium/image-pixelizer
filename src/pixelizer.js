@@ -5,6 +5,7 @@
 	const Options = require('./options');
 	const Cluster = require('./cluster');
 	const Palette = require('./palette');
+	const Bitmap = require('./bitmap');
 
     /**
      * Pixelizer main class.
@@ -13,107 +14,61 @@
      */
 	class Pixelizer {
 
-		/** Default constructor. */
-		constructor() {
-			// Do nothing.
+		/**
+		 * Default constructor.
+		 * @param {Bitmap} bitmap 
+		 * @param {Options} options
+		 */
+		constructor(bitmap, options) {
+			// Save options.
+			this.options = options;
+			// Create old pixel representation with size 1.
+			this.oldPixels = this.createPixels(bitmap, 1);
+			// Create new pixel representation with option size.
+			this.newPixels = this.createPixels(bitmap, options.pixelSize);
+		}
+
+		/**
+		 * Update existing options.
+		 * @param {options} options 
+		 */
+		updateOptions(options) {
+			this.options = options;
+			this.newPixels = this.createPixels(bitmap, options.pixelSize);
+		}
+
+		/**
+		 * Pixelize.
+		 * @return {Bitmap}
+		 */
+		pixelize() {
+			// Pixel clustering.
+			let cluster = new Cluster(this.oldPixels, this.newPixels, this.options);
+			cluster.cluster();
+			// Reduce color palette.
+			let palette = new Palette(cluster.getPixels(), this.options);
+			let reducedPixels = palette.reduce();
+			// Return.
+			return reducedPixels.toBitmap();
 		}
 
         /**
-         * Load an input image file.
-         * @param {string} input file path to input image file
-         */
-		static load(input) {
-			return new Promise((resolve, reject) => {
-				Jimp.read(input).then(
-					(image) => {
-						Log.info("Load image from: " + input);
-						resolve(image);
-					}, (err) => {
-						Log.error("Failed to load image from: " + input + ', error: ' + err);
-						reject(err);
-					}
-				);
-			});
-		}
-
-        /**
-         * Pixelize image with options.
-         * @param {Jimp} image input image to be pixelized
-         * @param {Options} options pixeliation options
-         */
-		static process(image, options) {
-			return new Promise((resolve, reject) => {
-				// Step 1: resize input image.
-				let resizedImage = this.resizeImage(image, options);
-				// Step 2: convert resized image to pixels.
-				let oldPixels = this.createPixels(resizedImage, 1);
-				// Step 3: blur resized image.
-				let blurSize = options.pixelSize * options.blurSize;
-				if (blurSize > 0) {
-					resizedImage.blur(blurSize);
-				}
-				// Step 4: create pixels with new pixel size.
-				let newPixels =
-					this.createPixels(resizedImage, options.pixelSize);
-				// Step 5: clustering pixels.
-				let cluster = new Cluster(oldPixels, newPixels, options);
-				cluster.cluster();
-				// Step 6: reduce color palette.
-				let palette = new Palette(cluster.getResult(), options);
-				let result = palette.reduce();
-				// Return.
-				resolve(result.toImage());
-			});
-		}
-
-        /**
-         * Save image to file.
-         * @param {Jimp} image image to output
-         * @param {string} output complete file path of output image
-         */
-		static save(image, output) {
-			image.write(output);
-			Log.info('Save image to: ' + output);
-		}
-
-
-        /**
-         * Resize input image width and height to be multiple of new pixel
-         * size, so there will be no artifact lines after pixelization.
-         * @param {Jimp} image
-         * @param {Options} options
-         * @returns {Jimp}
-         */
-		static resizeImage(image, options) {
-			// Gather parameters.
-			let size = options.pixelSize;
-			let width = image.bitmap.width;
-			let height = image.bitmap.height;
-			let resizeAlign = options.resizeAlign;
-			let resizeFilter = options.resizeFilter;
-			// New width and height should be quantized by new pixel size.
-			let fixedWidth = Math.floor(width / size) * size;
-			let fixedHeight = Math.floor(height / size) * size;
-			// Use cover mode for resize.
-			return image.cover(fixedWidth, fixedHeight, resizeAlign, resizeFilter);
-		}
-
-        /**
-         * Convert image to pixels controlled by pixel size.
-         * @param {Jimp} image
+         * Convert bitmap to pixels controlled by pixel size.
+         * @param {Bitmap} bitmap
          * @param {number} size
          * @return {Pixels}
          */
-		static createPixels(image, size) {
-			let width = image.bitmap.width;
-			let height = image.bitmap.height;
+		createPixels(bitmap, size) {
+			let width = bitmap.width;
+			let height = bitmap.height;
 			let w = Math.floor(width / size);
 			let h = Math.floor(height / size);
-			return new Pixels(w, h, size, image);
+			return new Pixels(w, h, size, bitmap);
 		}
 	}
 
 	Pixelizer.Options = Options;
+	Pixelizer.Bitmap = Bitmap;
 	module.exports = Pixelizer;
 
 })();

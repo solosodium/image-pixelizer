@@ -8,6 +8,7 @@ module.exports = require('./src/pixelizer');
 
 const fs = require('fs');
 const Pixelizer = require('./src/pixelizer');
+const Jimp = require('jimp');
 const Log = require('./src/log');
 
 // TODO: change this Pixelizer options.
@@ -15,7 +16,7 @@ const options = new Pixelizer.Options()
 	.setPixelSize(20)
 	.setClusterThreshold(0.001)
 	.setMaxIteration(200)
-	.setNumberOfColors(10);
+	.setNumberOfColors(16);
 
 // Process all images without keyword 'pixel' in the name.
 const folder = './example/images/';
@@ -31,14 +32,18 @@ fs.readdir(folder, function (err, files) {
 			let input = folder + file;
 			let output = folder + name + '.' + keyword + ext;
 			// Actual pixelizing.
-			Pixelizer.load(input).then((image) => {
-				return Pixelizer.process(image, options);
-			}, (err) => {
-				Log.error(err);
-			}).then((image) => {
-				return Pixelizer.save(image, output);
-			}).then(() => {}, (err) => {
-				Log.error(err);
+			Jimp.read(input).then(image => {
+				let bitmap = new Pixelizer.Bitmap(
+					image.bitmap.width,
+					image.bitmap.height,
+					image.bitmap.data);
+				let pixelizer = new Pixelizer(bitmap, options);
+				let resultBitmap = pixelizer.pixelize();
+				let resultImage = new Jimp(resultBitmap.width, resultBitmap.height);
+				resultImage.bitmap.data = resultBitmap.data;
+				resultImage.write(output);
+			}).catch(error => {
+				console.error(error);
 			});
 		}
 	}

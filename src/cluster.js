@@ -102,7 +102,7 @@
 		 * Get clustered new pixels.
 		 * @returns {Pixels} new pixels
 		 */
-		getResult() {
+		getPixels() {
 			return this.newPixels;
 		}
 

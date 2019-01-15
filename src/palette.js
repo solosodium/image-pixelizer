@@ -2,7 +2,6 @@
 
     const Pixels = require('./pixels');
     const RGBA = require('./color');
-	const Log = require('./log');
 	const Options = require('./options');
 
     /**
@@ -26,7 +25,7 @@
 
 		/**
 		 * Reduce the number of colors in pixels.
-		 * @return {Array{RGBA}} an array of reduced colors
+		 * @return {Pixels} an array of reduced colors
 		 */
 		reduce() {
 			// If number of colors is not positve, do not reduce.
