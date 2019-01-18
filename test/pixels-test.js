@@ -5,7 +5,6 @@ const Bitmap = require('../src/bitmap');
 
 describe('Pixels (pixels.js)', () => {
 
-	// Create a mock bitmap.
 	let data = [];
 	for (var i = 0; i < 10 * 10 * 4; i++) {
 		data.push(i % 255);

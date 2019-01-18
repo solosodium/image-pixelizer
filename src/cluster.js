@@ -4,7 +4,6 @@
 	const RGBA = require('./color');
 	const Options = require('./options');
 	const Labels = require('./labels');
-	const Log = require('./log');
 
 	class Cluster {
 
@@ -30,19 +29,29 @@
 			];
 		}
 
-		/** Map old pixels to new pixels, and update new pixels. */
+		/**
+		 * Map old pixels to new pixels, and update new pixels.
+		 * @return {Cluster} reference to this cluster object
+		 */
 		cluster() {
 			for (let i = 0; i < this.options.maxIteration; i++) {
 				let pixelChangeCount = this.map();
 				this.reduce();
 				let percentage =
 					pixelChangeCount / this.oldPixels.width / this.oldPixels.height;
-				Log.info('Cluster iteration ' + i + ', change % is ' + (percentage * 100));
 				if (percentage < this.options.clusterThreshold) {
 					break;
 				}
 			}
 			return this;
+		}
+
+		/**
+		 * Get clustered new pixels.
+		 * @returns {Pixels} new pixels
+		 */
+		getPixels() {
+			return this.newPixels;
 		}
 
 		/** Assgin old pixels with new pixel labels. */
@@ -96,14 +105,6 @@
 					this.newPixels.setPixel(xx, yy, aggregate);
 				}
 			}
-		}
-
-		/**
-		 * Get clustered new pixels.
-		 * @returns {Pixels} new pixels
-		 */
-		getPixels() {
-			return this.newPixels;
 		}
 
 		/**

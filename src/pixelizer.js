@@ -1,6 +1,5 @@
 (function () {
 
-	const Log = require('./log');
 	const Pixels = require('./pixels');
 	const Options = require('./options');
 	const Cluster = require('./cluster');

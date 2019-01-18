@@ -1,14 +1,12 @@
 {
 	"name": "image-pixelizer",
-	"version": "1.0.0",
-	"description": "A tool to generate pixel art from images",
+	"version": "1.0.1",
+	"description": "A tool to generate pixel arts from images",
 	"main": "index.js",
 	"scripts": {
 		"test": "mocha"
 	},
-	"dependencies": {
-		"jimp": "^0.2.28"
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"mocha": "^5.1.1"
 	},

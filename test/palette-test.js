@@ -12,7 +12,8 @@ describe('Palette', () => {
 		data.push(i % 255);
     }
     let mockBitmap = new Bitmap(10, 10, data);
-    let pixels = new Pixels(5, 5, 2, mockBitmap);
+	
+	let pixels = new Pixels(5, 5, 2, mockBitmap);
 
     let options = new Options().setNumberOfColors(5);
 

@@ -1,7 +1,5 @@
 (function () {
 
-	const Jimp = require("jimp");
-
 	/**
 	 * Pixelizer configurable options.
 	 */

@@ -12,7 +12,6 @@ describe('Cluster (cluster.js)', () => {
 	}
 	let mockBitmap = new Bitmap(100, 80, data);
 	
-
 	let oldPixels = new Pixels(100, 80, 1, mockBitmap);
 	let newPixels = new Pixels(10, 8, 10, mockBitmap);
 

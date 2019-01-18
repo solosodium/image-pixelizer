@@ -2,7 +2,7 @@
 
     /**
      * A light weight wrapper class encapsulating bitmap data.
-     * Compatible with Jimp.bitmap (only width, height, data).
+     * Compatible with Jimp.bitmap (only contains width, height, data).
      */
     class Bitmap {
 
@@ -14,7 +14,7 @@
          * 
          */
         constructor(width, height, data) {
-            // Check data dimension.
+            // Check data dimension, each pixel has 4 values.
             if (width * height * 4 !== data.length) {
                 throw new Error("Length of data doesn't match width and height");
             }
