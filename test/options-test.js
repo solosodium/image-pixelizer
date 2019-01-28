@@ -7,9 +7,9 @@ describe('Options (options.js)', () => {
 
 	it('constructor should set default parameters', () => {
 		assert.equal(options.pixelSize, 1);
-		assert.equal(options.colorDistRatio, 0.75);
-		assert.equal(options.maxIteration, 10);
+		assert.equal(options.colorDistRatio, 0.5);
 		assert.equal(options.clusterThreshold, 0.01);
+		assert.equal(options.maxIteration, 10);
 		assert.equal(options.numberOfColors, 128);
 	});
 
@@ -29,13 +29,6 @@ describe('Options (options.js)', () => {
 		assert.equal(options.colorDistRatio, 1);
 	});
 
-	it('test set max iteration', () => {
-		options.setMaxIteration(1);
-		assert.equal(options.maxIteration, 1);
-		options.setMaxIteration(20);
-		assert.equal(options.maxIteration, 20);
-	});
-
 	it('test set cluster threshold', () => {
 		options.setClusterThreshold(0.1);
 		assert.equal(options.clusterThreshold, 0.1);
@@ -43,6 +36,13 @@ describe('Options (options.js)', () => {
 		assert.equal(options.clusterThreshold, 0);
 		options.setClusterThreshold(2);
 		assert.equal(options.clusterThreshold, 1);
+	});
+
+	it('test set max iteration', () => {
+		options.setMaxIteration(1);
+		assert.equal(options.maxIteration, 1);
+		options.setMaxIteration(20);
+		assert.equal(options.maxIteration, 20);
 	});
 
 	it('test set number of colors', () => {

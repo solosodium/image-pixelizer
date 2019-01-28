@@ -8,9 +8,9 @@
 		constructor() {
 			// Processing parameters.
 			this.pixelSize = 1;
-			this.colorDistRatio = 0.75;
-			this.maxIteration = 10;
+			this.colorDistRatio = 0.5;
 			this.clusterThreshold = 0.01;
+			this.maxIteration = 10;
 			this.numberOfColors = 128;
 			// Return.
 			return this;
@@ -40,16 +40,6 @@
 		}
 
         /**
-         * Set the maximum number of clustering iterations.
-         * @param {number} iteration maximum number of iterations to
-         *     perform before a hard stop during pixelization
-         */
-		setMaxIteration(iteration) {
-			this.maxIteration = iteration;
-			return this;
-		}
-
-        /**
          * Set the threshold for clustering stop.
          * @param {number} threshold during each clustering iteration, if
          *     the number of candidates change their cluster assignment
@@ -58,6 +48,16 @@
          */
 		setClusterThreshold(threshold) {
 			this.clusterThreshold = Math.max(0, Math.min(threshold, 1));
+			return this;
+		}
+
+        /**
+         * Set the maximum number of clustering iterations.
+         * @param {number} iteration maximum number of iterations to
+         *     perform before a hard stop during pixelization
+         */
+		setMaxIteration(iteration) {
+			this.maxIteration = iteration;
 			return this;
 		}
 

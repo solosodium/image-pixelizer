@@ -1,2 +1,105 @@
 # image-pixelizer
-A tool to generate pixel arts from images
+
+A tool to generate pixel arts from images.
+
+## Algorithm
+
+This tool uses a simple two-stage algorithm to create pixel arts from images.
+
+1. **Pixel clustering**: Cluster pixels based on their similarity in color and relative distance.
+1. **Color Reduction**: Reduce the number of colors of the clustered image to maximize color diversity.
+
+## Install
+
+```shell
+npm install image-pixelizer --save
+```
+
+## Usage
+
+```javascript
+// Import Pixelizer.
+const Pixelizer = require('image-pixelizer');
+
+// Create Options for Pixelizer.
+let options = new Pixelizer.Options()
+    .setPixelSize(1)
+    .setColorDistRatio(0.5)
+    .setClusterThreshold(0.01)
+    .setMaxIteration(10)
+    .setNumberOfColors(128);
+
+// Create compatible input Bitmap.
+let inputBitmap = new Pixelizer.Bitmap(
+    1920,   // width in pixels
+    1080,   // height in pixels
+    [...]   // one dimension array for RGBA bitmap
+);
+
+// Pixelize!
+let outputBitmap = 
+    new Pixelizer(inputBitmap, options).pixelize();
+```
+## Options
+
+There are in total 5 options for the Pixelizer.
+
+1. **Pixel Size**: This is size of output bitmap pixel in terms of the input bitmap pixels. For example, if this number is 10, each output bitmap pixel represents a 10x10 square (100 pixels) in the input bitmap.
+1. **Color Distance Ratio**: This is a 0 to 1 factor which tunes the weights assigned to pixel color difference and distance difference during clustering. 0 means only using distance difference when deciding which cluster a pixel goes to, while 1 means only use the color difference.
+1. **Cluster Threshold**: This is the ratio between number of pixels that changed cluster and number of total pixels, which is used as the primary condition to stop clustering. For example, if this number is 0.01, it means algorithm will stop clustering if less than 1% of pixels changed cluster assignment during the last iteration. 
+1. **Maximum Iteration**: This is the maximum number of iterations allowed during pixel clustering stage. This is set as a hard stop condition to avoid clustering that does not converge.
+1. **Number of Colors**: This is the intended number of colors in the output bitmap.
+
+Default values:
+
+* *pixelSize = 1*
+* *colorDistRatio = 0.5*
+* *clusterThreshold = 0.01*
+* *maxIteration = 10*
+* *numberOfColors = 128*
+
+## Bitmap
+
+Bitmap is a light-weight wrapper class to represent a RGBA bitmap image. It's created with width, height (both in pixels) and a one dimensional array containing RGBA values for all pixels. Each RGBA value should be a number between 0 to 255.
+
+An extremely simple example which has 4 pixels:
+
+```
+|------------------------|-----------------------|
+| black (0, 0, 0, 255)   | red (255, 0, 0, 255)  |
+|------------------------|-----------------------|
+| green (0, 255, 0, 255) | blue (0, 0, 255, 255) |
+|------------------------|-----------------------|
+```
+
+To create this bitmap:
+
+```javascript
+let bitmap = new Pixelizer.Bitmap(
+    2, 
+    2,
+    [
+        0,   0,   0,   255,     // black
+        255, 0,   0,   255,     // red
+        0,   255, 0,   255,     // green
+        0,   0,   255, 255      // blue
+    ]
+);
+```
+
+If you use [jimp](https://www.npmjs.com/package/jimp), you might notice this shares similarity with its bitmap. This is by design, which means you can create Pixelizer Bitmap directly from jimp:
+
+```javascript
+Jimp.read('lenna.png')
+  .then(lenna => {
+      let bitmap = new Pixelizer.Bitmap(
+          lenna.bitmap.width,
+          lenna.bitmap.height,
+          lenna.bitmap.data
+      );
+      // Other Pixelizer code...
+  })
+  .catch(err => {
+    console.error(err);
+  });
+```
