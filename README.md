@@ -33,7 +33,7 @@ let options = new Pixelizer.Options()
 let inputBitmap = new Pixelizer.Bitmap(
     1920,   // width in pixels
     1080,   // height in pixels
-    [...]   // one dimension array for RGBA bitmap
+    [...]   // one dimension data array for RGBA bitmap
 );
 
 // Pixelize!
@@ -60,7 +60,7 @@ Default values:
 
 ## Bitmap
 
-Bitmap is a light-weight wrapper class to represent a RGBA bitmap image. It's created with width, height (both in pixels) and a one dimensional array containing RGBA values for all pixels. Each RGBA value should be a number between 0 to 255.
+Bitmap is a light-weight wrapper class to represent a RGBA bitmap image. It's created with width, height (both in pixels) and a one dimensional data array containing RGBA values for all pixels. Each RGBA value should be a number between 0 to 255.
 
 An extremely simple example which has 4 pixels:
 
@@ -87,19 +87,29 @@ let bitmap = new Pixelizer.Bitmap(
 );
 ```
 
-If you use [jimp](https://www.npmjs.com/package/jimp), you might notice this shares similarity with its bitmap. This is by design, which means you can create Pixelizer Bitmap directly from jimp:
+If you use [jimp](https://www.npmjs.com/package/jimp), you might notice this shares similarity with its bitmap. This is by design, which means you can create Pixelizer Bitmap directly from jimp, and use jimp to output image file by overriding its bitmap:
 
 ```javascript
 Jimp.read('lenna.png')
   .then(lenna => {
-      let bitmap = new Pixelizer.Bitmap(
+      // Create Pixelizer bitmap from jimp.
+      let inputBitmap = new Pixelizer.Bitmap(
           lenna.bitmap.width,
           lenna.bitmap.height,
           lenna.bitmap.data
       );
-      // Other Pixelizer code...
+      // Pixelizer processing code...
+      let outputBitmap = ...
+      // Override jimp bitmap and output image.
+      lenna.bitmap.width = outputBitmap.width;
+      lenna.bitmap.height = outputBitmap.height;
+      lenna.bitmap.data = outputBitmap.data;
+      lenna.write('lenna-pixel.png');
   })
   .catch(err => {
     console.error(err);
   });
 ```
+
+As you can see, there is no deep integration with jimp for the Bitmap class, so this package can be used in more use cases (of course, with the help of more adapter code for Bitmap).
+ 

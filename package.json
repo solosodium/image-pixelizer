@@ -1,6 +1,6 @@
 {
 	"name": "image-pixelizer",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "A tool to generate pixel arts from images",
 	"main": "index.js",
 	"scripts": {
@@ -15,5 +15,6 @@
 		"url": "https://github.com/solosodium/image-pixelizer"
 	},
 	"author": "solosodium",
-	"license": "MIT"
+	"license": "MIT",
+	"keywords": ["pixel art", "image processing"]
 }
