@@ -1,12 +1,11 @@
 {
 	"name": "image-pixelizer",
-	"version": "1.0.4",
+	"version": "1.0.6",
 	"description": "A tool to generate pixel arts from images",
 	"main": "index.js",
 	"scripts": {
 		"test": "mocha"
 	},
-	"dependencies": {},
 	"devDependencies": {
 		"mocha": "^5.1.1"
 	},
@@ -16,5 +15,8 @@
 	},
 	"author": "solosodium",
 	"license": "MIT",
-	"keywords": ["pixel art", "image processing"]
+	"keywords": [
+		"pixel art",
+		"image processing"
+	]
 }

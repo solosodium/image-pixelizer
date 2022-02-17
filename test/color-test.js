@@ -33,7 +33,7 @@ describe('Color (color.js)', () => {
 			let rgba1 = new RGBA(128, 128, 128, 128);
 			let rgba2 = new RGBA(0, 0, 0, 0);
 			assert.equal(RGBA.difference(rgba1, rgba1), 0);
-			assert(Math.abs(RGBA.difference(rgba1, rgba2) - 0.502) < 0.001);
+			assert(Math.abs(RGBA.difference(rgba1, rgba2) - 0.4193) < 0.001);
 		});
 
 		it('test add colors function', () => {

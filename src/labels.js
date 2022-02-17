@@ -1,5 +1,3 @@
-(function () {
-
 	/** Lables class maintains a label mapping from old pixels to new pixels. */
 	class Labels {
 
@@ -90,5 +88,3 @@
 	}
 
 	module.exports = Labels;
-
-})();

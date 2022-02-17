@@ -1,4 +1,52 @@
-(function () {
+	/**
+	 * Color in XYZ color space with alpha channel.
+	 */
+	 class XYZA {
+		/**
+		 * XYZA constructor.
+		 * @param {RGBA} rgba
+		 */
+		 constructor(rgba) {
+			// Convert sRGB to XYZ with D65 as reference white: 
+			// http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html
+			let r = rgba.r / 255;
+			let g = rgba.g / 255;
+			let b = rgba.b / 255;
+			let a = rgba.a / 255;
+			this.x = 0.4124564 * r + 0.3575761 * g + 0.1804375 * b;
+			this.y = 0.2126729 * r + 0.7151522 * g + 0.0721750 * b;
+			this.z = 0.0193339 * r + 0.1191920 * g + 0.9503041 * b;
+			this.a = a;
+		}
+	}
+
+	/**
+	 * Color in Lab color space.
+	 */
+	class LABAlpha {
+		/**
+		 * Default constructor.
+		 * @param {XYZA} xyza 
+		 */
+		constructor(xyza) {
+			// Convert XYZ to LAB with D65 as reference white:
+			// http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_Lab.html
+			const e = 0.008856;
+			const k = 903.3;
+			// XYZ D65 values: https://en.wikipedia.org/wiki/Illuminant_D65
+			let x = xyza.x / 0.31271;
+			let y = xyza.y / 0.32902;
+			let z = xyza.z / 0.35827;
+			let a = xyza.a * 255;
+			let fx = x > e ? Math.cbrt(x) : (k * x + 16) / 116;
+			let fy = y > e ? Math.cbrt(y) : (k * y + 16) / 116;
+			let fz = z > e ? Math.cbrt(z) : (k * z + 16) / 116;
+			this.l = 116 * fy - 16;
+			this.a = 500 * (fx - fy);
+			this.b = 200 * (fy - fz);
+			this.alpha = a;
+		}
+	}
 
 	/** RGB color with alpha channel. */
 	class RGBA {
@@ -10,10 +58,10 @@
 		 * @param {number} a alpha 0~255
 		 */
 		constructor(r, g, b, a) {
-			this.r = clamp(r, 0, 255);
-			this.g = clamp(g, 0, 255);
-			this.b = clamp(b, 0, 255);
-			this.a = clamp(a, 0, 255);
+			this.r = Math.min(Math.max(0, r), 255);
+			this.g = Math.min(Math.max(0, g), 255);
+			this.b = Math.min(Math.max(0, b), 255);
+			this.a = Math.min(Math.max(0, a), 255);
 		}
 
 		/**
@@ -25,17 +73,27 @@
 		}
 
 		/**
+		 * Convert to a Javascript rgba color string.
+		 * @returns a Javascript rgba color string
+		 */
+		toString() {
+			return "rgba(" + this.r, + ", " + this.g + ", " + this.b + ", " + this.a + ")";
+		}
+
+		/**
 		 * Compare two color difference.
 		 * @param {RGBA} c1
 		 * @param {RGBA} c2
-		 * @returns {number} difference is a scaled value less than 1 but greater than 0
+		 * @returns {number} difference is a scaled value larger than 0
 		 */
 		static difference(c1, c2) {
-			let dr = Math.abs(c1.r - c2.r);
-			let dg = Math.abs(c1.g - c2.g);
-			let db = Math.abs(c1.b - c2.b);
-			let da = Math.abs(c1.a - c2.a);
-			return (dr + dg + db + da) / 4 / 255;
+			let labaplha1 = new LABAlpha(new XYZA(c1));
+			let labaplha2 = new LABAlpha(new XYZA(c2));
+			let dl = Math.abs(labaplha1.l - labaplha2.l) / 100;
+			let da = Math.abs(labaplha1.a - labaplha2.a) / 220;
+			let db = Math.abs(labaplha1.b - labaplha2.b) / 220;
+			let dalpha = Math.abs(labaplha1.alpha - labaplha2.alpha) / 255;
+			return (dl + da + db + dalpha) / 4;
 		}
 
 		/**
@@ -99,15 +157,4 @@
 		}
 	}
 
-	/** Clamp value between min and max values. */
-	function clamp(val, min, max) {
-		return Math.min(Math.max(min, val), max);
-	}
-
-	/** 
-	 * Color module for color related classes.
-	 * Currently only has RGBA, but could be augmented with better color format in the future.
-	 */
 	module.exports = RGBA;
-
-})();
