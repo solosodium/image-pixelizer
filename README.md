@@ -2,6 +2,12 @@
 
 A tool to generate pixel arts from images.
 
+## Release Notes
+
+Version 1.0.6
+* Added RGBA to LAB (through XYZ) color conversion for more accurate color comparison.
+* Added support for vanila Javascript use case: [image-pixelizer.min.js](dist/image-pixelizer.min.js).
+
 ## Algorithm
 
 This tool uses a simple two-stage algorithm to create pixel arts from images.
