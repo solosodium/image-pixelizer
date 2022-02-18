@@ -302,12 +302,6 @@ var Pixelizer;
         }
     }
     
-    const Pixels = require("./pixels");
-    
-    const RGBA = require("./color");
-    
-    const Options = require("./options");
-    
     class Palette {
         constructor(pixels, options) {
             this.pixels = pixels;
