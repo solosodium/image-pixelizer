@@ -89,11 +89,11 @@
 		static difference(c1, c2) {
 			let labaplha1 = new LABAlpha(new XYZA(c1));
 			let labaplha2 = new LABAlpha(new XYZA(c2));
-			let dl = Math.abs(labaplha1.l - labaplha2.l) / 100;
-			let da = Math.abs(labaplha1.a - labaplha2.a) / 220;
-			let db = Math.abs(labaplha1.b - labaplha2.b) / 220;
-			let dalpha = Math.abs(labaplha1.alpha - labaplha2.alpha) / 255;
-			return (dl + da + db + dalpha) / 4;
+			let dl = Math.abs(labaplha1.l - labaplha2.l);
+			let da = Math.abs(labaplha1.a - labaplha2.a);
+			let db = Math.abs(labaplha1.b - labaplha2.b);
+			let dalpha = Math.abs(labaplha1.alpha - labaplha2.alpha);
+			return Math.sqrt(dl * dl + da * da + db * db + dalpha * dalpha) / 453;
 		}
 
 		/**
