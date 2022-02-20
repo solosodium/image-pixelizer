@@ -172,7 +172,7 @@ var Pixelizer;
             return new RGBA(this.r, this.g, this.b, this.a);
         }
         toString() {
-            return "rgba(" + this.r, +", " + this.g + ", " + this.b + ", " + this.a + ")";
+            return "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + this.a + ")";
         }
         static difference(c1, c2) {
             let labaplha1 = new LABAlpha(new XYZA(c1));

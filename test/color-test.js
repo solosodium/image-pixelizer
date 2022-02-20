@@ -72,6 +72,11 @@ describe('Color (color.js)', () => {
 			let rgba = new RGBA(1, 1, 1, 1);
 			assert.equal(RGBA.length(rgba), 2);
 		});
+
+		it('test to string function', () => {
+			let rgba = new RGBA(1, 2, 3, 4);
+			assert.equal(rgba.toString(), 'rgba(1, 2, 3, 4)');
+		});
 	});
 
 });

@@ -77,7 +77,7 @@
 		 * @returns a Javascript rgba color string
 		 */
 		toString() {
-			return "rgba(" + this.r, + ", " + this.g + ", " + this.b + ", " + this.a + ")";
+			return "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + this.a + ")";
 		}
 
 		/**
