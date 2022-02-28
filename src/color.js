@@ -6,17 +6,21 @@
 		 * XYZA constructor.
 		 * @param {RGBA} rgba
 		 */
-		 constructor(rgba) {
-			// Convert sRGB to XYZ with D65 as reference white: 
+		constructor(rgba) {
+			let r = Math.min(Math.max(0, rgba.r / 255), 1);
+			let g = Math.min(Math.max(0, rgba.g / 255), 1);
+			let b = Math.min(Math.max(0, rgba.b / 255), 1);
+			// First inverse companding sRGB:
 			// http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html
-			let r = rgba.r / 255;
-			let g = rgba.g / 255;
-			let b = rgba.b / 255;
-			let a = rgba.a / 255;
+			r = r < 0.04045 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+			g = g < 0.04045 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+			b = b < 0.04045 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+			// Convert sRGB to XYZ with D65 2 degrees as reference white.
+			// http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
 			this.x = 0.4124564 * r + 0.3575761 * g + 0.1804375 * b;
 			this.y = 0.2126729 * r + 0.7151522 * g + 0.0721750 * b;
 			this.z = 0.0193339 * r + 0.1191920 * g + 0.9503041 * b;
-			this.a = a;
+			this.a = rgba.a / 255;
 		}
 	}
 
@@ -29,22 +33,21 @@
 		 * @param {XYZA} xyza 
 		 */
 		constructor(xyza) {
-			// Convert XYZ to LAB with D65 as reference white:
+			// Convert XYZ to LAB with D65 2 degress as reference white:
 			// http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_Lab.html
 			const e = 0.008856;
 			const k = 903.3;
-			// XYZ D65 values: https://en.wikipedia.org/wiki/Illuminant_D65
-			let x = xyza.x / 0.31271;
-			let y = xyza.y / 0.32902;
-			let z = xyza.z / 0.35827;
-			let a = xyza.a * 255;
-			let fx = x > e ? Math.cbrt(x) : (k * x + 16) / 116;
-			let fy = y > e ? Math.cbrt(y) : (k * y + 16) / 116;
-			let fz = z > e ? Math.cbrt(z) : (k * z + 16) / 116;
+			// D65 2 degress: https://en.wikipedia.org/wiki/Illuminant_D65
+			let x = xyza.x / 0.95047;
+			let y = xyza.y / 1.00000;
+			let z = xyza.z / 1.08883;
+			let fx = x > e ? Math.pow(x, 1 / 3) : (k * x + 16) / 116;
+			let fy = y > e ? Math.pow(y, 1 / 3) : (k * y + 16) / 116;
+			let fz = z > e ? Math.pow(z, 1 / 3) : (k * z + 16) / 116;
 			this.l = 116 * fy - 16;
 			this.a = 500 * (fx - fy);
 			this.b = 200 * (fy - fz);
-			this.alpha = a;
+			this.alpha = xyza.a * 255;
 		}
 	}
 
@@ -81,6 +84,22 @@
 		}
 
 		/**
+		 * Convert to XYZA color.
+		 * @returns {XYZA} color
+		 */
+		toXYZA() {
+			return new XYZA(this);
+		}
+
+		/**
+		 * Convert to LABAlpha color.
+		 * @returns {LABAlpha} color
+		 */
+		toLABAlpha() {
+			return new LABAlpha(new XYZA(this));
+		}
+
+		/**
 		 * Compare two color difference.
 		 * @param {RGBA} c1
 		 * @param {RGBA} c2
@@ -93,7 +112,7 @@
 			let da = Math.abs(labaplha1.a - labaplha2.a);
 			let db = Math.abs(labaplha1.b - labaplha2.b);
 			let dalpha = Math.abs(labaplha1.alpha - labaplha2.alpha);
-			return Math.sqrt(dl * dl + da * da + db * db + dalpha * dalpha) / 453;
+			return Math.sqrt(dl * dl + da * da + db * db + dalpha * dalpha) / 355;
 		}
 
 		/**

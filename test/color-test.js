@@ -77,6 +77,28 @@ describe('Color (color.js)', () => {
 			let rgba = new RGBA(1, 2, 3, 4);
 			assert.equal(rgba.toString(), 'rgba(1, 2, 3, 4)');
 		});
+
+		it('test to XYZA', () => {
+			let rgba = new RGBA(128, 12, 200, 255);
+			let xyza = rgba.toXYZA();
+			assert(isClose(xyza.x, 0.1946, 0.0001));
+			assert(isClose(xyza.y, 0.0902, 0.0001));
+			assert(isClose(xyza.z, 0.5535, 0.0001));
+			assert(isClose(xyza.a, 1, 0.0001));
+		});
+
+		it('test to LABAlpha', () => {
+			let rgba = new RGBA(128, 12, 200, 255);
+			let labaplga = rgba.toLABAlpha();
+			assert(isClose(labaplga.l, 36.03, 0.01));
+			assert(isClose(labaplga.a, 70.42, 0.01));
+			assert(isClose(labaplga.b, -69.91, 0.01));
+			assert(isClose(labaplga.alpha, 255, 0.01));
+		});
 	});
 
 });
+
+function isClose(num1, num2, delta) {
+	return Math.abs(num1 - num2) < delta;
+}

@@ -132,14 +132,16 @@ var Pixelizer;
     
     class XYZA {
         constructor(rgba) {
-            let r = rgba.r / 255;
-            let g = rgba.g / 255;
-            let b = rgba.b / 255;
-            let a = rgba.a / 255;
+            let r = Math.min(Math.max(0, rgba.r / 255), 1);
+            let g = Math.min(Math.max(0, rgba.g / 255), 1);
+            let b = Math.min(Math.max(0, rgba.b / 255), 1);
+            r = r < .04045 ? r / 12.92 : Math.pow((r + .055) / 1.055, 2.4);
+            g = g < .04045 ? g / 12.92 : Math.pow((g + .055) / 1.055, 2.4);
+            b = b < .04045 ? b / 12.92 : Math.pow((b + .055) / 1.055, 2.4);
             this.x = .4124564 * r + .3575761 * g + .1804375 * b;
             this.y = .2126729 * r + .7151522 * g + .072175 * b;
             this.z = .0193339 * r + .119192 * g + .9503041 * b;
-            this.a = a;
+            this.a = rgba.a / 255;
         }
     }
     
@@ -147,17 +149,16 @@ var Pixelizer;
         constructor(xyza) {
             const e = .008856;
             const k = 903.3;
-            let x = xyza.x / .31271;
-            let y = xyza.y / .32902;
-            let z = xyza.z / .35827;
-            let a = xyza.a * 255;
-            let fx = x > e ? Math.cbrt(x) : (k * x + 16) / 116;
-            let fy = y > e ? Math.cbrt(y) : (k * y + 16) / 116;
-            let fz = z > e ? Math.cbrt(z) : (k * z + 16) / 116;
+            let x = xyza.x / .95047;
+            let y = xyza.y / 1;
+            let z = xyza.z / 1.08883;
+            let fx = x > e ? Math.pow(x, 1 / 3) : (k * x + 16) / 116;
+            let fy = y > e ? Math.pow(y, 1 / 3) : (k * y + 16) / 116;
+            let fz = z > e ? Math.pow(z, 1 / 3) : (k * z + 16) / 116;
             this.l = 116 * fy - 16;
             this.a = 500 * (fx - fy);
             this.b = 200 * (fy - fz);
-            this.alpha = a;
+            this.alpha = xyza.a * 255;
         }
     }
     
@@ -174,14 +175,20 @@ var Pixelizer;
         toString() {
             return "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + this.a + ")";
         }
+        toXYZA() {
+            return new XYZA(this);
+        }
+        toLABAlpha() {
+            return new LABAlpha(new XYZA(this));
+        }
         static difference(c1, c2) {
             let labaplha1 = new LABAlpha(new XYZA(c1));
-			let labaplha2 = new LABAlpha(new XYZA(c2));
-			let dl = Math.abs(labaplha1.l - labaplha2.l);
-			let da = Math.abs(labaplha1.a - labaplha2.a);
-			let db = Math.abs(labaplha1.b - labaplha2.b);
-			let dalpha = Math.abs(labaplha1.alpha - labaplha2.alpha);
-			return Math.sqrt(dl * dl + da * da + db * db + dalpha * dalpha) / 453;
+            let labaplha2 = new LABAlpha(new XYZA(c2));
+            let dl = Math.abs(labaplha1.l - labaplha2.l);
+            let da = Math.abs(labaplha1.a - labaplha2.a);
+            let db = Math.abs(labaplha1.b - labaplha2.b);
+            let dalpha = Math.abs(labaplha1.alpha - labaplha2.alpha);
+            return Math.sqrt(dl * dl + da * da + db * db + dalpha * dalpha) / 355;
         }
         static add(c1, c2) {
             let r = c1.r + c2.r;
@@ -416,6 +423,32 @@ var Pixelizer;
         }
     }
     
+    class _Pixelizer {
+        constructor(bitmap, options) {
+            this.options = options;
+            this.oldPixels = this.createPixels(bitmap, 1);
+            this.newPixels = this.createPixels(bitmap, options.pixelSize);
+        }
+        updateOptions(options) {
+            this.options = options;
+            this.newPixels = this.createPixels(bitmap, options.pixelSize);
+        }
+        pixelize() {
+            let cluster = new Cluster(this.oldPixels, this.newPixels, this.options);
+            cluster.cluster();
+            let palette = new Palette(cluster.getPixels(), this.options);
+            let reducedPixels = palette.reduce();
+            return reducedPixels.toBitmap();
+        }
+        createPixels(bitmap, size) {
+            let width = bitmap.width;
+            let height = bitmap.height;
+            let w = Math.floor(width / size);
+            let h = Math.floor(height / size);
+            return new Pixels(w, h, size, bitmap);
+        }
+    }
+    
     class Pixels {
         constructor(width, height, size, bitmap) {
             this.width = width;
@@ -476,32 +509,6 @@ var Pixelizer;
                 }
             }
             return new Bitmap(this.width, this.height, data);
-        }
-    }
-    
-    class _Pixelizer {
-        constructor(bitmap, options) {
-            this.options = options;
-            this.oldPixels = this.createPixels(bitmap, 1);
-            this.newPixels = this.createPixels(bitmap, options.pixelSize);
-        }
-        updateOptions(options) {
-            this.options = options;
-            this.newPixels = this.createPixels(bitmap, options.pixelSize);
-        }
-        pixelize() {
-            let cluster = new Cluster(this.oldPixels, this.newPixels, this.options);
-            cluster.cluster();
-            let palette = new Palette(cluster.getPixels(), this.options);
-            let reducedPixels = palette.reduce();
-            return reducedPixels.toBitmap();
-        }
-        createPixels(bitmap, size) {
-            let width = bitmap.width;
-            let height = bitmap.height;
-            let w = Math.floor(width / size);
-            let h = Math.floor(height / size);
-            return new Pixels(w, h, size, bitmap);
         }
     }
     
