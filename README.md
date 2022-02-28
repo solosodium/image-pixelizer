@@ -4,6 +4,10 @@ A tool to generate pixel arts from images.
 
 ## Release Notes
 
+Version 1.1.0
+* Stable RGBA -> XYZA -> LAB(alpha) conversion.
+* Improved color difference performance.
+
 Version 1.0.7
 * Fixed a minor bug in distribution version of the vanila Javascript libraies.
 

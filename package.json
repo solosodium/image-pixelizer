@@ -1,6 +1,6 @@
 {
   "name": "image-pixelizer",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "A tool to generate pixel arts from images",
   "main": "index.js",
   "scripts": {
