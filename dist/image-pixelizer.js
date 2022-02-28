@@ -168,6 +168,7 @@ var Pixelizer;
             this.g = Math.min(Math.max(0, g), 255);
             this.b = Math.min(Math.max(0, b), 255);
             this.a = Math.min(Math.max(0, a), 255);
+            this.labalpha = new LABAlpha(new XYZA(this));
         }
         copy() {
             return new RGBA(this.r, this.g, this.b, this.a);
@@ -175,15 +176,12 @@ var Pixelizer;
         toString() {
             return "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + this.a + ")";
         }
-        toXYZA() {
-            return new XYZA(this);
-        }
         toLABAlpha() {
-            return new LABAlpha(new XYZA(this));
+            return this.labalpha;
         }
         static difference(c1, c2) {
-            let labaplha1 = new LABAlpha(new XYZA(c1));
-            let labaplha2 = new LABAlpha(new XYZA(c2));
+            let labaplha1 = c1.toLABAlpha();
+            let labaplha2 = c2.toLABAlpha();
             let dl = Math.abs(labaplha1.l - labaplha2.l);
             let da = Math.abs(labaplha1.a - labaplha2.a);
             let db = Math.abs(labaplha1.b - labaplha2.b);

@@ -65,6 +65,7 @@
 			this.g = Math.min(Math.max(0, g), 255);
 			this.b = Math.min(Math.max(0, b), 255);
 			this.a = Math.min(Math.max(0, a), 255);
+			this.labalpha = new LABAlpha(new XYZA(this));
 		}
 
 		/**
@@ -84,19 +85,11 @@
 		}
 
 		/**
-		 * Convert to XYZA color.
-		 * @returns {XYZA} color
-		 */
-		toXYZA() {
-			return new XYZA(this);
-		}
-
-		/**
 		 * Convert to LABAlpha color.
 		 * @returns {LABAlpha} color
 		 */
 		toLABAlpha() {
-			return new LABAlpha(new XYZA(this));
+			return this.labalpha;
 		}
 
 		/**
@@ -106,8 +99,8 @@
 		 * @returns {number} difference is a scaled value larger than 0
 		 */
 		static difference(c1, c2) {
-			let labaplha1 = new LABAlpha(new XYZA(c1));
-			let labaplha2 = new LABAlpha(new XYZA(c2));
+			let labaplha1 = c1.toLABAlpha();
+			let labaplha2 = c2.toLABAlpha();
 			let dl = Math.abs(labaplha1.l - labaplha2.l);
 			let da = Math.abs(labaplha1.a - labaplha2.a);
 			let db = Math.abs(labaplha1.b - labaplha2.b);
