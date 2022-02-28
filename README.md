@@ -2,6 +2,10 @@
 
 A tool to generate pixel arts from images.
 
+![Example](/images/example.png)
+
+1280 x 1280 pixelized to 128 x 128 with 64 distinct colors.
+
 ## Release Notes
 
 Version 1.1.0
